@@ -1,6 +1,0 @@
-venv
-*.sqlite3
-token
-trans
-venv
-__pycache__
