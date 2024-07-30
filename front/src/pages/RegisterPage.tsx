@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Card,
@@ -7,119 +7,192 @@ import {
   Input,
   Button,
   Stack,
+  useColorModeValue,
   HStack,
   Select,
-  useColorModeValue,
 } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
-import NonAuthNavbar from "../components/NonAuthNavbar";
+import axios from "../services/api-client"; // Update import to use your configured API client
 
-const RegisterPage = () => {
-  const navigate = useNavigate(); // Initialize the navigate function
+const SignUpPage = () => {
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    firstName: "",
+    lastName: "",
+    password: "",
+    password2: "",
+    gender: "",
+    dateOfBirth: "",
+  });
+  const [error, setError] = useState(null);
+
   const inputBgColor = useColorModeValue("gray.200", "gray.600");
   const cardTextColor = useColorModeValue("black", "white");
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (
+      !formData.username ||
+      !formData.email ||
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.password ||
+      !formData.password2 ||
+      !formData.dateOfBirth
+    ) {
+      setError("Please fill in all required fields.");
+      return;
+    }
+    if (formData.password !== formData.password2) {
+      setError("Passwords do not match.");
+      return;
+    }
+    try {
+      await axios.post("/auth/signUp/", formData);
+      window.location.href = "/settings"; // Redirect to settings page for profile completion
+    } catch (err) {
+      setError("Registration failed. Please check your details and try again.");
+    }
+  };
+
   return (
-      <Box
-        p={5}
-        bgGradient="linear(to-b, purple.300, orange.200 15%, gray.200 75%)"
-        minH="100vh"
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
+    <Box
+      p={5}
+      bgGradient="linear(to-b, purple.300, orange.200 15%, gray.200 75%)"
+      minH="100vh"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+    >
+      <Card
+        bg="transparent"
+        color={cardTextColor}
+        p={8}
+        borderRadius="lg"
+        boxShadow="lg"
+        maxW="md"
+        w="full"
       >
-        <Card
-          bg="transparent"
-          color={cardTextColor}
-          p={8}
-          borderRadius="lg"
-          boxShadow="lg"
-          maxW="md"
-          w="full"
-        >
-          <CardBody>
-            <Heading as="h1" mb={6} textAlign="center">
-              Register
-            </Heading>
+        <CardBody>
+          <Heading as="h1" mb={6} textAlign="center">
+            Sign Up
+          </Heading>
+          <form onSubmit={handleSubmit}>
             <Stack spacing={4}>
               <HStack>
                 <Input
-                  type="text"
+                  name="firstName"
                   placeholder="First Name"
+                  value={formData.firstName}
+                  onChange={handleChange}
                   bg={inputBgColor}
                   variant="filled"
-                  _hover={{ bg: inputBgColor }}
                   required
                 />
                 <Input
-                  type="text"
+                  name="lastName"
                   placeholder="Last Name"
+                  value={formData.lastName}
+                  onChange={handleChange}
                   bg={inputBgColor}
                   variant="filled"
-                  _hover={{ bg: inputBgColor }}
                   required
                 />
               </HStack>
               <Input
+                name="username"
+                placeholder="Username"
+                value={formData.username}
+                onChange={handleChange}
+                bg={inputBgColor}
+                variant="filled"
+                required
+              />
+              <Input
+                name="email"
                 type="email"
                 placeholder="Email"
+                value={formData.email}
+                onChange={handleChange}
                 bg={inputBgColor}
                 variant="filled"
-                _hover={{ bg: inputBgColor }}
                 required
               />
               <Input
+                name="password"
                 type="password"
                 placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
                 bg={inputBgColor}
                 variant="filled"
-                _hover={{ bg: inputBgColor }}
                 required
               />
               <Input
-                type="date"
-                placeholder="Date of Birth"
+                name="password2"
+                type="password"
+                placeholder="Confirm Password"
+                value={formData.password2}
+                onChange={handleChange}
                 bg={inputBgColor}
                 variant="filled"
-                _hover={{ bg: inputBgColor }}
                 required
               />
               <Select
-                placeholder="Select Country"
+                name="gender"
+                placeholder="Select Gender"
+                value={formData.gender}
+                onChange={handleChange}
                 bg={inputBgColor}
                 variant="filled"
-                _hover={{ bg: inputBgColor }}
                 required
               >
-                <option value="us">United States</option>
-                <option value="ca">Canada</option>
-                <option value="uk">United Kingdom</option>
-                <option value="au">Australia</option>
-                {/* Add more options as needed */}
+                <option value="male">Male</option>
+                <option value="female">Female</option>
               </Select>
+              <Input
+                name="dateOfBirth"
+                type="date"
+                placeholder="Date of Birth"
+                value={formData.dateOfBirth}
+                onChange={handleChange}
+                bg={inputBgColor}
+                variant="filled"
+                required
+              />
+              {error && (
+                <p
+                  style={{
+                    color: "red",
+                    textAlign: "center",
+                    marginTop: "1rem",
+                  }}
+                >
+                  {error}
+                </p>
+              )}
               <Button
                 bg="black"
                 color="white"
                 size="lg"
                 type="submit"
                 _hover={{ bg: "gray.700" }}
+                mt={4}
+                w="full"
               >
                 Register
               </Button>
             </Stack>
-            <p
-              className="account"
-              style={{ marginTop: "1rem", textAlign: "center" }}
-            >
-              Already have an account?{" "}
-              <a href="#" onClick={() => navigate("/login")}>
-                Login
-              </a>
-            </p>
-          </CardBody>
-        </Card>
-      </Box>
+          </form>
+        </CardBody>
+      </Card>
+    </Box>
   );
 };
 
-export default RegisterPage;
+export default SignUpPage;

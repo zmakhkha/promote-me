@@ -35,12 +35,15 @@ class AppUser(AbstractBaseUser):
 	]
 	username = models.CharField(max_length=30, unique=True, blank=False)
 	email = models.EmailField(unique=True, blank=False)
-	location = models.CharField(blank=True, null=True, max_length=255)
-	snap_username = models.CharField(max_length=255, blank=True, null=True)
-	kik_username = models.CharField(max_length=255, blank=True, null=True)
-	insta_username = models.CharField(max_length=255, blank=True, null=True)
-	genre =  models.CharField( max_length=1, choices=GENRE_CHOICES)
+	firstName = models.CharField(max_length=30, blank=False)
+	lastName = models.CharField(max_length=30, blank=False)
+	snapUsername = models.CharField(max_length=255, blank=True, null=True)
+	kikUsername = models.CharField(max_length=255, blank=True, null=True)
+	instaUsername = models.CharField(max_length=255, blank=True, null=True)
+	gender =  models.CharField( max_length=1, choices=GENRE_CHOICES)
 	interests = models.TextField(blank=True)
+	country = models.CharField(max_length=100, blank=True, null=True)
+	date_of_birth = models.DateField(blank=True, null=True)
 
 	USERNAME_FIELD = 'email'
 	REQUIRED_FIELDS = ['username', 'password1', 'password2']
