@@ -13,3 +13,11 @@
 .DS_Store
 .env
 npm-debug.log
+
+
+venv
+*.sqlite3
+token
+trans
+venv
+__pycache__
