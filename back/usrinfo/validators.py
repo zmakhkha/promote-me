@@ -2,6 +2,7 @@ from django.apps import apps
 from django.contrib.auth.validators import ASCIIUsernameValidator
 from django.conf import settings
 from django.core.validators import RegexValidator
+from django.core.exceptions import ValidationError
 from rest_framework.validators import UniqueValidator
 
 from .models import AppUser
@@ -18,3 +19,9 @@ email_validator = RegexValidator(
     r'^[a-zA-Z0-9._-]+@[a-zA-Z]+\.[a-z]{2,}$',
     'Enter a valid email address.'
 )
+
+
+def max_size_validator(file):
+	max_size_mb = 2
+	if (file.size > max_size_mb * 10**6):
+		raise ValidationError(f"File can not be larger that {max_size_mb}MB!")

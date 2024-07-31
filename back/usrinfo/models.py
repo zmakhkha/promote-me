@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from .validators import max_size_validator
 
 class AppUserManager(BaseUserManager):
 	def create_user(self, username=None, email=None, password=None, **extra_fields):
@@ -44,6 +45,11 @@ class AppUser(AbstractBaseUser):
 	interests = models.TextField(blank=True)
 	country = models.CharField(max_length=100, blank=True, null=True)
 	date_of_birth = models.DateField(blank=True, null=True)
+	image = models.ImageField(
+        upload_to='images', 
+        validators=[max_size_validator], 
+        default='images/default.png'
+    )
 
 	USERNAME_FIELD = 'email'
 	REQUIRED_FIELDS = ['username', 'password1', 'password2']
