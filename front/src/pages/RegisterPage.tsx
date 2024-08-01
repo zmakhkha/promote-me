@@ -12,6 +12,7 @@ import {
   Select,
 } from "@chakra-ui/react";
 import axios from "../services/api-client"; // Update import to use your configured API client
+import Bubbles from "../components/Bubbles";
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
@@ -68,16 +69,16 @@ const SignUpPage = () => {
       display="flex"
       justifyContent="center"
       alignItems="center"
+      position="relative"
     >
+      <Bubbles />
       <Card
-        // bg="transparent"
-         bg={useColorModeValue('white', 'gray.800')} p={8} borderRadius="lg" boxShadow="lg" maxW="md" w={[300, 400, 500]}
-        // color={cardTextColor}
-        // p={8}
-        // borderRadius="lg"
-        // boxShadow="lg"
-        // maxW="md"
-        // w="full"
+        bg={useColorModeValue("white", "gray.800")}
+        p={8}
+        borderRadius="lg"
+        boxShadow="lg"
+        maxW="md"
+        w={[300, 400, 500]}
       >
         <CardBody>
           <Heading as="h1" mb={6} textAlign="center">
@@ -178,17 +179,23 @@ const SignUpPage = () => {
                 </p>
               )}
               <Button
-          type="submit"
-          bg="black"
-          color="white"
-          _hover={{ bg: 'gray.700' }}
-          mt={4}
-          w="full"
+                type="submit"
+                bg="black"
+                color="white"
+                _hover={{ bg: "gray.700" }}
+                mt={4}
+                w="full"
               >
                 Register
               </Button>
             </Stack>
           </form>
+          <p
+            className="account"
+            style={{ marginTop: "1rem", textAlign: "center" }}
+          >
+            Already have an account? <a href="/login">LogIn</a>
+          </p>
         </CardBody>
       </Card>
     </Box>

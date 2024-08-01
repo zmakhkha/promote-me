@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Card, CardBody, Heading, Input, Button, Stack, useColorModeValue } from '@chakra-ui/react';
 import axios from 'axios';
 import '../styles/loginPage.css';
+import Bubbles from '../components/Bubbles';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -39,7 +40,10 @@ const LoginPage = () => {
       display="flex"
       justifyContent="center"
       alignItems="center"
+      position='relative'
     >
+      <Bubbles />
+
       <Card
         bg={useColorModeValue("white", "gray.800")}
         color={cardTextColor}

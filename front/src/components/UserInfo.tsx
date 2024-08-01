@@ -15,7 +15,7 @@ const UserInfo = ({ userData, handleChange, handleImageChange, handleSubmit, ima
             bg={inputBgColor}
           />
         </FormControl>
-        <FormControl isReadOnly>
+        {/* <FormControl isReadOnly>
           <FormLabel color='gray.500'>Username</FormLabel>
           <Input
             name="username"
@@ -23,7 +23,7 @@ const UserInfo = ({ userData, handleChange, handleImageChange, handleSubmit, ima
             readOnly
             bg={inputBgColor}
           />
-        </FormControl>
+        </FormControl> */}
         {/* <FormControl isReadOnly>
           <FormLabel color='gray.500'>Email</FormLabel>
           <Input
@@ -34,16 +34,16 @@ const UserInfo = ({ userData, handleChange, handleImageChange, handleSubmit, ima
             bg={inputBgColor}
           />
         </FormControl> */}
-        <FormControl isReadOnly>
+        {/* <FormControl isReadOnly>
           <FormLabel color='gray.500'>Date of Birth</FormLabel>
           <Input
             name="date_of_birth"
             type="date"
             value={userData.date_of_birth}
-            readOnly
+            // readOnly
             bg={inputBgColor}
           />
-        </FormControl>
+        </FormControl> */}
         {/* <FormControl>
           <FormLabel color='gray.500'>First Name</FormLabel>
           <Input
