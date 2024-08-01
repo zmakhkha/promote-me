@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import axios from "../services/api-client"; // Update import to use your configured API client
 import Bubbles from "../components/Bubbles";
+import NaNavBar from "../components/NaNavbar";
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
@@ -29,6 +30,11 @@ const SignUpPage = () => {
 
   const inputBgColor = useColorModeValue("gray.100", "gray.700");
   const cardTextColor = useColorModeValue("gray.800", "gray.100");
+  const gradientBgColor = useColorModeValue(
+    "linear(to-b, white, gray.200 15%, teal.200 75%)",
+    "linear(to-b, gray.800, gray.600 15%, gray.200 75%)"
+  );
+  const cardShadowColor = useColorModeValue("md", "lg");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -62,21 +68,23 @@ const SignUpPage = () => {
   };
 
   return (
+    <>
+    <NaNavBar/>
     <Box
       p={5}
-      bgGradient="linear(to-b, teal.300, blue.200 15%, gray.200 75%)"
+      bgGradient={gradientBgColor}
       minH="100vh"
       display="flex"
       justifyContent="center"
       alignItems="center"
-      position="relative"
+      // position="relative"
     >
       <Bubbles />
       <Card
         bg={useColorModeValue("white", "gray.800")}
         p={8}
         borderRadius="lg"
-        boxShadow="lg"
+        boxShadow={cardShadowColor}
         maxW="md"
         w={[300, 400, 500]}
       >
@@ -194,11 +202,12 @@ const SignUpPage = () => {
             className="account"
             style={{ marginTop: "1rem", textAlign: "center" }}
           >
-            Already have an account? <a href="/login">LogIn</a>
+            Already have an account? <a href="/login">Log In</a>
           </p>
         </CardBody>
       </Card>
     </Box>
+    </>
   );
 };
 
