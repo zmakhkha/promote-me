@@ -26,8 +26,8 @@ const SignUpPage = () => {
   });
   const [error, setError] = useState(null);
 
-  const inputBgColor = useColorModeValue("gray.200", "gray.600");
-  const cardTextColor = useColorModeValue("black", "white");
+  const inputBgColor = useColorModeValue("gray.100", "gray.700");
+  const cardTextColor = useColorModeValue("gray.800", "gray.100");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,20 +63,21 @@ const SignUpPage = () => {
   return (
     <Box
       p={5}
-      bgGradient="linear(to-b, purple.300, orange.200 15%, gray.200 75%)"
+      bgGradient="linear(to-b, teal.300, blue.200 15%, gray.200 75%)"
       minH="100vh"
       display="flex"
       justifyContent="center"
       alignItems="center"
     >
       <Card
-        bg="transparent"
-        color={cardTextColor}
-        p={8}
-        borderRadius="lg"
-        boxShadow="lg"
-        maxW="md"
-        w="full"
+        // bg="transparent"
+         bg={useColorModeValue('white', 'gray.800')} p={8} borderRadius="lg" boxShadow="lg" maxW="md" w={[300, 400, 500]}
+        // color={cardTextColor}
+        // p={8}
+        // borderRadius="lg"
+        // boxShadow="lg"
+        // maxW="md"
+        // w="full"
       >
         <CardBody>
           <Heading as="h1" mb={6} textAlign="center">
@@ -177,13 +178,12 @@ const SignUpPage = () => {
                 </p>
               )}
               <Button
-                bg="black"
-                color="white"
-                size="lg"
-                type="submit"
-                _hover={{ bg: "gray.700" }}
-                mt={4}
-                w="full"
+          type="submit"
+          bg="black"
+          color="white"
+          _hover={{ bg: 'gray.700' }}
+          mt={4}
+          w="full"
               >
                 Register
               </Button>

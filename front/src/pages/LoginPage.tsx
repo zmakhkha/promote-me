@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Card, CardBody, Heading, Input, Button, Stack, HStack, useColorModeValue } from '@chakra-ui/react';
+import { Box, Card, CardBody, Heading, Input, Button, Stack, useColorModeValue } from '@chakra-ui/react';
 import axios from 'axios';
 import '../styles/loginPage.css';
 
@@ -8,10 +8,10 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
 
-  const inputBgColor = useColorModeValue('gray.200', 'gray.600');
-  const cardTextColor = useColorModeValue('black', 'white');
+  const inputBgColor = useColorModeValue('gray.100', 'gray.700');
+  const cardTextColor = useColorModeValue('gray.800', 'gray.100');
 
-  const handleLogin = async (event: Event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
 
     try {
@@ -34,13 +34,21 @@ const LoginPage = () => {
   return (
     <Box
       p={5}
-      bgGradient="linear(to-b, purple.300, orange.200 15%, gray.200 75%)"
+      bgGradient="linear(to-b, teal.300, blue.200 15%, gray.200 75%)"
       minH="100vh"
       display="flex"
       justifyContent="center"
       alignItems="center"
     >
-      <Card bg="transparent" color={cardTextColor} p={8} borderRadius="lg" boxShadow="lg" maxW="md" w="full">
+      <Card
+        bg={useColorModeValue("white", "gray.800")}
+        color={cardTextColor}
+        p={8}
+        borderRadius="lg"
+        boxShadow="lg"
+        maxW="md"
+        w={[300, 400, 500]}
+      >
         <CardBody>
           <Heading as="h1" mb={6} textAlign="center">Login</Heading>
           <form onSubmit={handleLogin}>
@@ -52,7 +60,6 @@ const LoginPage = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 bg={inputBgColor}
                 variant="filled"
-                _hover={{ bg: inputBgColor }}
                 required
               />
               <Input
@@ -62,7 +69,6 @@ const LoginPage = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 bg={inputBgColor}
                 variant="filled"
-                _hover={{ bg: inputBgColor }}
                 required
               />
               <Button bg="black" color="white" size="lg" type="submit" _hover={{ bg: 'gray.700' }}>
