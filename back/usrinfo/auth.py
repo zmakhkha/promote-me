@@ -7,14 +7,50 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import SignUpSerializer
 from .models import AppUser
 
+from core.utils import getLogging
+from django.contrib.auth import authenticate, login, logout
+
+from django.core.cache import cache
+
+
+logger = getLogging()
+
 class AuthViewSet(viewsets.ViewSet):
     permission_classes = [AllowAny]
     queryset = AppUser.objects.all()
 
     @action(detail=False, methods=['post'])
+    def signIn(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+        
+        if not email or not password:
+            return Response({'error': 'email and password are required.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        cache_key = f"login_attempts_{email}"
+        attempts = cache.get(cache_key, 0)
+        
+        if attempts >= 5:
+            return Response({'error': 'Too many login attempts. Please try again later.'}, status=status.HTTP_429_TOO_MANY_REQUESTS)
+        
+        user = authenticate(request, email=email, password=password)
+        
+        if user is not None:
+            cache.delete(cache_key)
+            refresh = RefreshToken.for_user(user)
+            login(request, user)
+            logger.info(f"[AuthViewSet::signIn] User {email} logged in successfully")
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+            }, status=status.HTTP_200_OK)
+        else:
+            cache.set(cache_key, attempts + 1, timeout=300)  
+            logger.critical(f"[AuthViewSet::signIn] Invalid login attempt for email {email}")
+            return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+    @action(detail=False, methods=['post'])
     def signUp(self, request):
-        print('--------')
-        print(request.data)
         serializer = SignUpSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()

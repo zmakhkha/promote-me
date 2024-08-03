@@ -1,103 +1,71 @@
-import React from 'react';
-import { Box, Avatar, Input, Button, Stack, FormControl, FormLabel } from '@chakra-ui/react';
+import React, { useState } from 'react';
+import { Box, Avatar, Input, Button, Stack, FormControl, FormLabel, Flex, Wrap, WrapItem, Tag, TagLabel, TagCloseButton } from '@chakra-ui/react';
 
 const UserInfo = ({ userData, handleChange, handleImageChange, handleSubmit, imagePreview, inputBgColor }) => {
+  const [interests, setInterests] = useState(userData.interests.split(' ').filter(Boolean));
+
+  const handleInterestChange = (e) => {
+    if (e.key === ' ') {
+      const newInterest = e.target.value.trim();
+      if (newInterest && interests.length < 5) {
+        const updatedInterests = [...interests, newInterest];
+        setInterests(updatedInterests);
+        handleChange({ target: { name: 'interests', value: updatedInterests.join(' ') + ' ' } });
+        e.target.value = '';
+      }
+    }
+  };
+
+  const removeInterest = (interestToRemove) => {
+    const updatedInterests = interests.filter(interest => interest !== interestToRemove);
+    setInterests(updatedInterests);
+    handleChange({ target: { name: 'interests', value: updatedInterests.join(' ') } });
+  };
+
   return (
     <form onSubmit={handleSubmit}>
-      <Stack spacing={4}>
-        <Avatar size="xl" src={imagePreview} mb={4} />
-        <FormControl>
-          <FormLabel color='gray.500'>Change Profile Picture</FormLabel>
-          <Input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            bg={inputBgColor}
-          />
-        </FormControl>
-        {/* <FormControl isReadOnly>
-          <FormLabel color='gray.500'>Username</FormLabel>
-          <Input
-            name="username"
-            value={userData.username}
-            readOnly
-            bg={inputBgColor}
-          />
-        </FormControl> */}
-        {/* <FormControl isReadOnly>
-          <FormLabel color='gray.500'>Email</FormLabel>
-          <Input
-            name="email"
-            type="email"
-            value={userData.email}
-            readOnly
-            bg={inputBgColor}
-          />
-        </FormControl> */}
-        {/* <FormControl isReadOnly>
-          <FormLabel color='gray.500'>Date of Birth</FormLabel>
-          <Input
-            name="date_of_birth"
-            type="date"
-            value={userData.date_of_birth}
-            // readOnly
-            bg={inputBgColor}
-          />
-        </FormControl> */}
-        {/* <FormControl>
-          <FormLabel color='gray.500'>First Name</FormLabel>
-          <Input
-            name="firstName"
-            value={userData.firstName}
-            onChange={handleChange}
-            bg={inputBgColor}
-          />
-        </FormControl>
-        <FormControl>
-          <FormLabel color='gray.500'>Last Name</FormLabel>
-          <Input
-            name="lastName"
-            value={userData.lastName}
-            onChange={handleChange}
-            bg={inputBgColor}
-          />
-        </FormControl> */}
-        {/* <FormControl>
-          <FormLabel color='gray.500'>Gender</FormLabel>
-          <Input
-            name="gender"
-            value={userData.gender}
-            onChange={handleChange}
-            bg={inputBgColor}
-          />
-        </FormControl> */}
+      <Stack spacing={4} align="center">
+        <Flex direction="column" align="center">
+          <Avatar size="xl" src={imagePreview} mb={4} />
+          <FormControl>
+            <FormLabel color='gray.500'>Change Profile Picture</FormLabel>
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              bg={inputBgColor}
+            />
+          </FormControl>
+        </Flex>
         <FormControl>
           <FormLabel color='gray.500'>Interests</FormLabel>
           <Input
             name="interests"
-            value={userData.interests}
-            onChange={handleChange}
+            onKeyDown={handleInterestChange}
             bg={inputBgColor}
+            placeholder="Type an interest and press space"
           />
+          <Wrap mt={2}>
+            {interests.map((interest, index) => (
+              <WrapItem key={index}>
+                <Tag
+                  size="md"
+                  borderRadius="full"
+                  variant="solid"
+                  colorScheme="blue"
+                >
+                  <TagLabel>{interest}</TagLabel>
+                  <TagCloseButton onClick={() => removeInterest(interest)} />
+                </Tag>
+              </WrapItem>
+            ))}
+          </Wrap>
+          {interests.length >= 10 && (
+            <Box color="red.500" mt={2}>
+              You can add a maximum of 10 interests.
+            </Box>
+          )}
         </FormControl>
-        {/* <FormControl>
-          <FormLabel color='gray.500'>Country</FormLabel>
-          <Input
-            name="country"
-            value={userData.country}
-            onChange={handleChange}
-            bg={inputBgColor}
-          />
-        </FormControl> */}
-        {/* <FormControl isReadOnly>
-          <FormLabel color='gray.500'>Score</FormLabel>
-          <Input
-            name="score"
-            value={userData.score}
-            readOnly
-            bg={inputBgColor}
-          />
-        </FormControl> */}
         <Button
           type="submit"
           bg="black"

@@ -61,7 +61,7 @@ const SignUpPage = () => {
     }
     try {
       await axios.post("/auth/signUp/", formData);
-      window.location.href = "/settings"; // Redirect to settings page for profile completion
+      window.location.href = "/login"; // Redirect to settings page for profile completion
     } catch (err) {
       setError("Registration failed. Please check your details and try again.");
     }

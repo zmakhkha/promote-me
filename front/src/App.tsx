@@ -12,7 +12,6 @@ import SettingsPage from './pages/SettingsPage';
 const App = () => {
   return (
     <Router>
-      {/* <NavBar /> You might want to include this outside the Routes for it to be visible on all pages */}
       <Routes>
         <Route path="/" element={<ExplorePage />} />
         <Route path="/login" element={<LoginPage />} />

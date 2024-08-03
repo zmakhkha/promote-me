@@ -1,58 +1,71 @@
-import { HStack, Image, Button, Box } from "@chakra-ui/react";
+import React from "react";
+import { HStack, Image, Button } from "@chakra-ui/react";
 import logo from "../assets/logo.webp";
 import ColorModeSwitch from "./ColorModeSwitch";
 import SearchInput from "./SearchInput";
-import { Show, Hide } from "@chakra-ui/react";
-import { NavLink, Navigate } from "react-router-dom";
+import { Show } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
+import axios from "../services/api-client";
 
 interface Props {
   onSearch: (searchText: string) => void;
 }
 
 const NavBar = ({ onSearch }: Props) => {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await axios.post("/api/logout/"); // Replace with your actual logout endpoint
+      // Clear tokens from cookies
+      document.cookie =
+        "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+      document.cookie =
+        "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+      navigate("/login"); // Redirect to login page after logout
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
-    <>
-      <HStack padding="10px">
-        <Image src={logo} boxSize="60px" />
-        <NavLink to="/">
-          <Button
-            variant="link"
-            textAlign="left"
-            whiteSpace="normal"
-            fontSize="lg"
-            marginX={2}
-          >
-            Explore
-          </Button>
-        </NavLink>
-        <NavLink to="/chat">
-          <Button
-            variant="link"
-            textAlign="left"
-            whiteSpace="normal"
-            fontSize="lg"
-            marginX={2}
-          >
-            Chat
-          </Button>
-        </NavLink>
-        <Show above="sm">
-          <SearchInput onSearch={onSearch} />
-        </Show>
-        <NavLink to="/login">
-          <Button
-            variant="link"
-            textAlign="left"
-            whiteSpace="normal"
-            fontSize="lg"
-            marginX={2}
-          >
-            LogIn
-          </Button>
-        </NavLink>
-        <ColorModeSwitch />
-      </HStack>
-    </>
+    <HStack padding="10px">
+      <Image src={logo} boxSize="60px" />
+      <Button
+        variant="link"
+        textAlign="left"
+        whiteSpace="normal"
+        fontSize="lg"
+        marginX={2}
+        onClick={() => navigate("/")}
+      >
+        Explore
+      </Button>
+      <Button
+        variant="link"
+        textAlign="left"
+        whiteSpace="normal"
+        fontSize="lg"
+        marginX={2}
+        onClick={() => navigate("/chat")}
+      >
+        Chat
+      </Button>
+      <Show above="sm">
+        <SearchInput onSearch={onSearch} />
+      </Show>
+      <Button
+        variant="link"
+        textAlign="left"
+        whiteSpace="normal"
+        fontSize="lg"
+        marginX={2}
+        onClick={handleLogout}
+      >
+        LogOut
+      </Button>
+      <ColorModeSwitch />
+    </HStack>
   );
 };
 

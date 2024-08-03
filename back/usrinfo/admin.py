@@ -1,3 +1,9 @@
 from django.contrib import admin
 
-# Register your models here.
+from.models import Tag, TagsPerUser
+@admin.register(Tag)
+class FriendshipAdmin(admin.ModelAdmin):
+    pass
+@admin.register(TagsPerUser)
+class FriendshipAdmin(admin.ModelAdmin):
+    pass
