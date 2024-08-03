@@ -17,12 +17,33 @@ const NavBar = ({ onSearch }: Props) => {
   const handleLogout = async () => {
     try {
       await axios.post("/api/logout/"); // Replace with your actual logout endpoint
+
       // Clear tokens from cookies
       document.cookie =
         "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
       document.cookie =
         "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
-      navigate("/login"); // Redirect to login page after logout
+
+      // Check local storage before removing
+      // console.log(
+      //   "Before removal:",
+      //   localStorage.getItem("accessToken"),
+      //   localStorage.getItem("refreshToken")
+      // );
+
+      // Remove from local storage
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+
+      // Check local storage after removing
+      // console.log(
+      //   "After removal:",
+      //   localStorage.getItem("accessToken"),
+      //   localStorage.getItem("refreshToken")
+      // );
+
+      // Redirect to login page after logout
+      navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
     }

@@ -2,6 +2,7 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
 from .models import AppUser, Tag, TagsPerUser
 from .serializers import AppUserSerializer, TagSerializer, TagsPerUserSerializer
@@ -47,3 +48,16 @@ class LogoutView(APIView):
             return response
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class CheckAuthView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response({"detail": "Authenticated"}, status=200)
+
+@api_view(['GET'])
+def check_auth(request):
+    if request.user and request.user.is_authenticated:
+        return Response({'status': 'Authenticated'})
+    else:
+        return Response({'status': 'Unauthenticated'}, status=401)

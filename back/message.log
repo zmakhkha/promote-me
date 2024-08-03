@@ -1175,3 +1175,111 @@ RuntimeError: You called this URL via POST, but the URL doesn't end in a slash a
 2024-08-03 10:43:03,995: WARNING: Unauthorized: /api/logout/
 2024-08-03 10:44:35,308: WARNING: Unauthorized: /api/logout/
 2024-08-03 10:45:02,039: INFO: /Users/zmakhkha/Desktop/promote-me/back/usrinfo/views.py changed, reloading.
+2024-08-03 10:50:12,158: WARNING: Unauthorized: /api/logout/
+2024-08-03 10:56:20,365: WARNING: Unauthorized: /api/logout/
+2024-08-03 11:01:50,797: INFO: /Users/zmakhkha/Desktop/promote-me/back/usrinfo/views.py changed, reloading.
+2024-08-03 11:02:04,800: INFO: /Users/zmakhkha/Desktop/promote-me/back/usrinfo/urls.py changed, reloading.
+2024-08-03 11:02:11,405: INFO: /Users/zmakhkha/Desktop/promote-me/back/usrinfo/urls.py changed, reloading.
+2024-08-03 11:02:52,296: WARNING: Not Found: /api/ch
+2024-08-03 11:03:03,895: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:03:18,983: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:09:35,135: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:09:35,140: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:09:35,145: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:09:35,146: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:10:12,270: INFO: /Users/zmakhkha/Desktop/promote-me/back/usrinfo/views.py changed, reloading.
+2024-08-03 11:10:44,186: INFO: /Users/zmakhkha/Desktop/promote-me/back/usrinfo/urls.py changed, reloading.
+2024-08-03 11:10:45,815: INFO: /Users/zmakhkha/Desktop/promote-me/back/usrinfo/urls.py changed, reloading.
+2024-08-03 11:10:50,394: INFO: /Users/zmakhkha/Desktop/promote-me/back/usrinfo/urls.py changed, reloading.
+2024-08-03 11:10:53,919: INFO: /Users/zmakhkha/Desktop/promote-me/back/usrinfo/urls.py changed, reloading.
+2024-08-03 11:11:10,087: INFO: [AuthViewSet::signIn] User lexi@mail.com logged in successfully
+2024-08-03 11:11:10,413: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:11:10,416: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:11:21,959: WARNING: Unauthorized: /api/logout/
+2024-08-03 11:11:24,166: WARNING: Unauthorized: /api/logout/
+2024-08-03 11:11:24,430: WARNING: Unauthorized: /api/logout/
+2024-08-03 11:11:24,590: WARNING: Unauthorized: /api/logout/
+2024-08-03 11:14:06,099: INFO: [AuthViewSet::signIn] User lexi@mail.com logged in successfully
+2024-08-03 11:14:06,386: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:14:06,388: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:15:39,780: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:15:39,783: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:20:50,117: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:20:50,120: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:21:02,063: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:21:02,064: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:21:16,001: INFO: [AuthViewSet::signIn] User lexi@mail.com logged in successfully
+2024-08-03 11:21:16,373: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:21:16,373: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:21:31,141: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:21:31,142: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:22:45,812: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:22:45,849: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:22:46,107: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:22:48,209: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:22:48,210: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:22:54,991: WARNING: Unauthorized: /api/logout/
+2024-08-03 11:24:55,085: WARNING: Unauthorized: /auth/signIn/
+2024-08-03 11:25:05,321: WARNING: Unauthorized: /auth/signIn/
+2024-08-03 11:31:06,098: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:31:06,104: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:31:22,979: CRITICAL: [AuthViewSet::signIn] Invalid login attempt for email les@lala.cd
+2024-08-03 11:31:22,979: WARNING: Unauthorized: /auth/signIn/
+2024-08-03 11:31:40,791: INFO: [AuthViewSet::signIn] User lexi@mail.com logged in successfully
+2024-08-03 11:31:41,206: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:31:41,209: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:32:54,515: INFO: /Users/zmakhkha/Desktop/promote-me/back/usrinfo/urls.py changed, reloading.
+2024-08-03 11:32:56,289: INFO: /Users/zmakhkha/Desktop/promote-me/back/usrinfo/urls.py changed, reloading.
+2024-08-03 11:32:58,627: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:32:58,629: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:35:47,832: WARNING: Unauthorized: /api/logout/
+2024-08-03 11:35:49,709: WARNING: Unauthorized: /api/logout/
+2024-08-03 11:35:54,802: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:35:54,805: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:36:05,431: INFO: [AuthViewSet::signIn] User lexi@mail.com logged in successfully
+2024-08-03 11:38:19,515: INFO: [AuthViewSet::signIn] User lexi@mail.com logged in successfully
+2024-08-03 11:38:42,988: INFO: [AuthViewSet::signIn] User lexi@mail.com logged in successfully
+2024-08-03 11:39:12,049: INFO: [AuthViewSet::signIn] User lexi@mail.com logged in successfully
+2024-08-03 11:40:11,384: INFO: [AuthViewSet::signIn] User lexi@mail.com logged in successfully
+2024-08-03 11:40:11,836: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:40:11,837: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:43:51,080: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:43:51,098: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:45:01,565: INFO: /Users/zmakhkha/Desktop/promote-me/back/core/settings.py changed, reloading.
+2024-08-03 11:45:04,931: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:45:04,933: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:47:31,807: INFO: [AuthViewSet::signIn] User lexi@mail.com logged in successfully
+2024-08-03 11:54:53,412: WARNING: Unauthorized: /api/logout/
+2024-08-03 11:54:54,864: WARNING: Unauthorized: /api/logout/
+2024-08-03 11:54:58,009: WARNING: Unauthorized: /api/logout/
+2024-08-03 11:55:01,280: WARNING: Unauthorized: /api/logout/
+2024-08-03 11:55:06,474: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:55:06,475: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 11:55:22,901: INFO: [AuthViewSet::signIn] User lexi@mail.com logged in successfully
+2024-08-03 11:58:18,824: INFO: [AuthViewSet::signIn] User lexi@mail.com logged in successfully
+2024-08-03 12:03:56,869: INFO: [AuthViewSet::signIn] User lexi@mail.com logged in successfully
+2024-08-03 12:10:41,029: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 12:10:41,034: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 12:12:41,015: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 12:12:41,018: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 12:12:41,019: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 12:12:41,021: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 12:15:14,156: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 12:15:14,157: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 12:15:14,158: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 12:15:14,162: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 12:15:46,012: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 12:15:46,012: WARNING: Unauthorized: /api/check-auth/
+2024-08-03 12:20:40,326: INFO: [AuthViewSet::signIn] User lexi@mail.com logged in successfully
+2024-08-03 12:21:10,089: INFO: [AuthViewSet::signIn] User lexi@mail.com logged in successfully
+2024-08-03 12:26:37,267: INFO: [AuthViewSet::signIn] User lexi@mail.com logged in successfully
+2024-08-03 12:29:13,867: INFO: [AuthViewSet::signIn] User lexi@mail.com logged in successfully
+2024-08-03 12:30:01,698: INFO: [AuthViewSet::signIn] User lexi@mail.com logged in successfully
+2024-08-03 12:31:53,115: INFO: [AuthViewSet::signIn] User lexi@mail.com logged in successfully
+2024-08-03 12:36:41,240: INFO: [AuthViewSet::signIn] User lexi@mail.com logged in successfully
+2024-08-03 12:47:22,291: INFO: [AuthViewSet::signIn] User lexi@mail.com logged in successfully
+2024-08-03 12:47:29,929: WARNING: Unauthorized: /api/logout/
+2024-08-03 12:47:32,048: WARNING: Unauthorized: /api/logout/
+2024-08-03 12:47:32,648: WARNING: Unauthorized: /api/logout/
+2024-08-03 12:53:47,205: INFO: [AuthViewSet::signIn] User lexi@mail.com logged in successfully
+2024-08-03 12:56:29,724: INFO: [AuthViewSet::signIn] User lexi@mail.com logged in successfully

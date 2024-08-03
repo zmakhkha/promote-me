@@ -9,7 +9,6 @@ import {
   Stack,
   useColorModeValue,
 } from "@chakra-ui/react";
-import Cookies from "js-cookie"; // Import js-cookie library
 import "../styles/loginPage.css";
 import Bubbles from "../components/Bubbles";
 import NaNavbar from "../components/NaNavbar";
@@ -27,30 +26,47 @@ const LoginPage = () => {
     "linear(to-b, gray.800, gray.600 15%, gray.200 75%)"
   );
   const cardShadowColor = useColorModeValue("md", "lg");
-
   const handleLogin = async (event) => {
     event.preventDefault();
-
+  
     try {
       const response = await axios.post(
         "/auth/signIn/",
         { email, password },
         { withCredentials: true }
       );
-
+  
+      // Log the response to ensure you receive tokens
+      console.log("Login response:", response.data);
+  
       // Extract access token and refresh token from response
-      const { accessToken, refreshToken } = response.data;
-
-      // Store tokens in cookies
-      Cookies.set("accessToken", accessToken, { expires: 1 }); // expires in 7 days
-      Cookies.set("refreshToken", refreshToken, { expires: 1 }); // expires in 7 days
-
+      const accessToken = response.data.access;
+      const refreshToken = response.data.refresh;
+      
+      if (!accessToken || !refreshToken) {
+        throw new Error("Failed to receive tokens from server.");
+      }
+  
+      // Store tokens in local storage
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+      console.log(accessToken);
+      
+  
+      // Log tokens to verify storage
+      console.log("Stored tokens:", {
+        accessToken: localStorage.getItem("accessToken"),
+        refreshToken: localStorage.getItem("refreshToken"),
+      });
+  
       // Handle successful login (e.g., redirect to a protected route)
       window.location.href = "/"; // Replace with actual redirect
     } catch (err) {
+      console.error("Login error:", err);
       setError("Login failed. Please check your credentials and try again.");
     }
   };
+  
 
   return (
     <>
