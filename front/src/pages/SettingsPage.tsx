@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Heading, useColorModeValue } from "@chakra-ui/react";
+import { Box, Heading, Flex, useColorModeValue } from "@chakra-ui/react";
 import axios from "../services/api-client"; // Use your configured API client
 import SwitchSettings from "../components/SwitchSettings";
 import NavBar from "../components/NavBar";
@@ -69,15 +69,17 @@ const SettingsPage = () => {
   const cardShadowColor = useColorModeValue("md", "lg");
 
   return (
-    <>
+    <Flex
+      direction="column"
+      minH="100vh"
+      bgGradient={gradientBgColor}
+    >
       <NavBar />
-      <Box
-        p={5}
-        bgGradient={gradientBgColor}
-        minH="100vh"
-        display="flex"
+      <Flex
+        flex="1"
         justifyContent="center"
         alignItems="center"
+        p={5}
       >
         <Box
           bg={useColorModeValue("white", "gray.800")}
@@ -86,12 +88,12 @@ const SettingsPage = () => {
           borderRadius="lg"
           boxShadow={cardShadowColor}
           maxW="md"
-          w={[300, 400, 500]}
+          w="full"
         >
           <Heading as="h1" mb={6} textAlign="center">
             Settings
           </Heading>
-          <SwitchSettings
+          <SwitchSettings 
             userData={userData}
             handleChange={handleChange}
             handleImageChange={handleImageChange}
@@ -100,8 +102,8 @@ const SettingsPage = () => {
             inputBgColor={inputBgColor}
           />
         </Box>
-      </Box>
-    </>
+      </Flex>
+    </Flex>
   );
 };
 
