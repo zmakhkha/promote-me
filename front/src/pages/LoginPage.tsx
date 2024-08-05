@@ -20,7 +20,8 @@ const LoginPage = () => {
   const [error, setError] = useState(null);
 
   const inputBgColor = useColorModeValue("gray.100", "gray.700");
-  const cardTextColor = useColorModeValue("gray.800", "gray.100");
+  const cardTextColor = useColorModeValue("gray.", "gray.100");
+  const hrefColor = useColorModeValue("gray.100", "gray.100");
   const gradientBgColor = useColorModeValue(
     "linear(to-b, white, gray.200 15%, teal.200 75%)",
     "linear(to-b, gray.800, gray.600 15%, gray.200 75%)"
@@ -72,7 +73,8 @@ const LoginPage = () => {
       <Box
         p={5}
         bgGradient={gradientBgColor}
-        minH="100vh"
+        minH="89vh"
+        // maxH="100hv"
         display="flex"
         justifyContent="center"
         alignItems="center"
@@ -134,7 +136,10 @@ const LoginPage = () => {
               className="account"
               style={{ marginTop: "1rem", textAlign: "center" }}
             >
-              Don't have an account? <a href="/register">Register</a>
+              Don't have an account?{" "}
+              <a style={{ color: hrefColor }} href="/register">
+                Register
+              </a>
             </p>
           </CardBody>
         </Card>

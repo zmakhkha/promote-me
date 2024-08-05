@@ -44,7 +44,7 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
     gender = models.CharField(max_length=1, choices=GENRE_CHOICES)
     interests = models.TextField(blank=True)
     country = models.CharField(max_length=100, blank=True, null=True)
-    date_of_birth = models.DateField(blank=True, null=True)
+    dateOfBirth = models.DateField(blank=True, null=True)
     image = models.ImageField(
         upload_to='images',
         validators=[max_size_validator],

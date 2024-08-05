@@ -1283,3 +1283,8 @@ RuntimeError: You called this URL via POST, but the URL doesn't end in a slash a
 2024-08-03 12:47:32,648: WARNING: Unauthorized: /api/logout/
 2024-08-03 12:53:47,205: INFO: [AuthViewSet::signIn] User lexi@mail.com logged in successfully
 2024-08-03 12:56:29,724: INFO: [AuthViewSet::signIn] User lexi@mail.com logged in successfully
+2024-08-05 01:22:34,288: WARNING: Bad Request: /auth/signUp/
+2024-08-05 01:23:46,783: INFO: /home/zakaria/promote-me/back/usrinfo/models.py changed, reloading.
+2024-08-05 01:23:57,910: INFO: /home/zakaria/promote-me/back/usrinfo/serializers.py changed, reloading.
+2024-08-05 01:24:36,096: INFO: [AuthViewSet::signIn] User zak@mail.com logged in successfully
+2024-08-05 01:26:28,672: INFO: [AuthViewSet::signIn] User zak@mail.com logged in successfully

@@ -16,11 +16,11 @@ class SignUpSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
     username = serializers.CharField(required=True, validators=[unique_username_validator, username_validator])
-    date_of_birth = serializers.DateField(required=True)  
+    dateOfBirth = serializers.DateField(required=True)  
 
     class Meta:
         model = AppUser
-        fields = ['firstName', 'lastName', 'username', 'email', 'password', 'password2', 'date_of_birth']
+        fields = ['firstName', 'lastName', 'username', 'email', 'password', 'password2', 'dateOfBirth']
     
     def validate(self, data):
         if data['password'] != data['password2']:
@@ -34,7 +34,7 @@ class SignUpSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             firstName=validated_data['firstName'],
             lastName=validated_data['lastName'],
-            date_of_birth=validated_data['date_of_birth']
+            dateOfBirth=validated_data['dateOfBirth']
         )
         user.set_password(validated_data['password'])
         user.save()
@@ -45,7 +45,7 @@ class AppUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AppUser
-        fields = ['id', 'username', 'email', 'firstName', 'lastName', 'snapUsername', 'kikUsername', 'instaUsername', 'gender', 'interests', 'country', 'date_of_birth', 'image', 'tags']
+        fields = ['id', 'username', 'email', 'firstName', 'lastName', 'snapUsername', 'kikUsername', 'instaUsername', 'gender', 'interests', 'country', 'dateOfBirth', 'image', 'tags']
     
     def update(self, instance, validated_data):
         # Handle tags
