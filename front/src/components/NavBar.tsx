@@ -1,17 +1,16 @@
-import React from "react";
-import { HStack, Image, Button } from "@chakra-ui/react";
-import logo from "../assets/logo.webp";
-import ColorModeSwitch from "./ColorModeSwitch";
-import SearchInput from "./SearchInput";
-import { Show } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
-import axios from "../services/api-client";
+import React, { useEffect, useRef } from 'react';
+import { Box, Center, Button, Text, useColorMode, Show,HStack, Image, Hide } from '@chakra-ui/react';
+import Typed from 'typed.js';
+import logo from '../assets/logo.webp';
+import ColorModeSwitch from './ColorModeSwitch';
+import { useNavigate } from 'react-router-dom';
+import axios from '../services/api-client';
 
 interface Props {
   onSearch: (searchText: string) => void;
 }
 
-const NavBar = ({ onSearch }: Props) => {
+const NaNavBar = ({ onSearch }: Props) => {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -48,11 +47,36 @@ const NavBar = ({ onSearch }: Props) => {
       console.error("Logout failed:", error);
     }
   };
+  const { colorMode } = useColorMode();
+  const color = colorMode === 'dark' ? 'white' : 'black';
+  const typedRef = useRef(null);
+
+  useEffect(() => {
+    const options = {
+      strings: ["Find your soulmate online", "Connect with people worldwide", "Find your social media soulmate"],
+      typeSpeed: 50,
+      backSpeed: 30,
+      backDelay: 2000,
+      startDelay: 400,
+      loop: true,
+      showCursor: true,
+      cursorChar: '|',
+    };
+
+    typedRef.current = new Typed(".typed-element", options);
+
+    return () => {
+      if (typedRef.current) {
+        typedRef.current.destroy();
+      }
+    };
+  }, []);
 
   return (
-    <HStack padding="10px">
-      <Image src={logo} boxSize="60px" />
-      <Button
+    <Box bg="transparent" width="100%" py={4}>
+      <HStack justifyContent="space-between" alignItems="center" px={4}>
+        <Image src={logo} boxSize="60px" />
+        <Button
         variant="link"
         textAlign="left"
         whiteSpace="normal"
@@ -72,10 +96,15 @@ const NavBar = ({ onSearch }: Props) => {
       >
         Chat
       </Button>
-      <Show above="sm">
-        <SearchInput onSearch={onSearch} />
-      </Show>
-      <Button
+        <Center flex="1">
+        <Hide below="md"> 
+          <Text color={color} fontSize="xl" fontWeight="bold">
+            Promote-me |{' '}
+            <Box as="span" className="typed-element" />
+          </Text>
+          </Hide>
+        </Center>
+        <Button
         variant="link"
         textAlign="left"
         whiteSpace="normal"
@@ -85,9 +114,10 @@ const NavBar = ({ onSearch }: Props) => {
       >
         LogOut
       </Button>
-      <ColorModeSwitch />
-    </HStack>
+        <ColorModeSwitch />
+      </HStack>
+    </Box>
   );
 };
 
-export default NavBar;
+export default NaNavBar;
