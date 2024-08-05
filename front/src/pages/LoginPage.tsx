@@ -9,7 +9,7 @@ import {
   Stack,
   useColorModeValue,
 } from "@chakra-ui/react";
-import "../styles/loginPage.css";
+import "../styles/LoginPage.css";
 import Bubbles from "../components/Bubbles";
 import NaNavbar from "../components/NaNavbar";
 import axios from "../services/api-client";
@@ -28,37 +28,36 @@ const LoginPage = () => {
   const cardShadowColor = useColorModeValue("md", "lg");
   const handleLogin = async (event) => {
     event.preventDefault();
-  
+
     try {
       const response = await axios.post(
         "/auth/signIn/",
         { email, password },
         { withCredentials: true }
       );
-  
+
       // Log the response to ensure you receive tokens
       console.log("Login response:", response.data);
-  
+
       // Extract access token and refresh token from response
       const accessToken = response.data.access;
       const refreshToken = response.data.refresh;
-      
+
       if (!accessToken || !refreshToken) {
         throw new Error("Failed to receive tokens from server.");
       }
-  
+
       // Store tokens in local storage
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
       console.log(accessToken);
-      
-  
+
       // Log tokens to verify storage
       console.log("Stored tokens:", {
         accessToken: localStorage.getItem("accessToken"),
         refreshToken: localStorage.getItem("refreshToken"),
       });
-  
+
       // Handle successful login (e.g., redirect to a protected route)
       window.location.href = "/"; // Replace with actual redirect
     } catch (err) {
@@ -66,7 +65,6 @@ const LoginPage = () => {
       setError("Login failed. Please check your credentials and try again.");
     }
   };
-  
 
   return (
     <>

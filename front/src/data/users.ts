@@ -1,6 +1,6 @@
-import p1 from "/Users/zmakhkha/Desktop/1.jpeg";
-import p2 from "/Users/zmakhkha/Desktop/2.jpeg";
-import p3 from "/Users/zmakhkha/Desktop/3.jpeg";
+import p1 from "../assets/profile/1.jpg";
+import p2 from "../assets/profile/2.jpg";
+import p3 from "../assets/profile/3.jpg";
 export default [
   {
     id: 1,

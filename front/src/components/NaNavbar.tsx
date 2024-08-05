@@ -1,58 +1,52 @@
-import { HStack, Image, Button, Box } from "@chakra-ui/react";
-import logo from "../assets/logo.webp";
-import ColorModeSwitch from "./ColorModeSwitch";
-import SearchInput from "./SearchInput";
-import { Show, Hide } from "@chakra-ui/react";
-import { NavLink, Navigate } from "react-router-dom";
+import React, { useEffect, useRef } from 'react';
+import { Box, Center, Text, useColorMode, HStack, Image } from '@chakra-ui/react';
+import Typed from 'typed.js';
+import logo from '../assets/logo.webp';
+import ColorModeSwitch from './ColorModeSwitch';
 
 interface Props {
   onSearch: (searchText: string) => void;
 }
 
 const NaNavBar = ({ onSearch }: Props) => {
+  const { colorMode } = useColorMode();
+  const color = colorMode === 'dark' ? 'white' : 'black';
+  const typedRef = useRef(null);
+
+  useEffect(() => {
+    const options = {
+      strings: ["Find your soulmate online", "Connect with people worldwide", "Find your social media soulmate"],
+      typeSpeed: 50,
+      backSpeed: 30,
+      backDelay: 2000,
+      startDelay: 400,
+      loop: true,
+      showCursor: true,
+      cursorChar: '|',
+    };
+
+    typedRef.current = new Typed(".typed-element", options);
+
+    return () => {
+      if (typedRef.current) {
+        typedRef.current.destroy();
+      }
+    };
+  }, []);
+
   return (
-    <>
-      <HStack padding="10px">
+    <Box bg="transparent" width="100%" py={4}>
+      <HStack justifyContent="space-between" alignItems="center" px={4}>
         <Image src={logo} boxSize="60px" />
-        <NavLink to="/">
-          <Button
-            variant="link"
-            textAlign="left"
-            whiteSpace="normal"
-            fontSize="lg"
-            marginX={2}
-          >
-            Explore
-          </Button>
-        </NavLink>
-        <NavLink to="/chat">
-          <Button
-            variant="link"
-            textAlign="left"
-            whiteSpace="normal"
-            fontSize="lg"
-            marginX={2}
-          >
-            Chat
-          </Button>
-        </NavLink>
-        <Show above="sm">
-          <SearchInput onSearch={onSearch} />
-        </Show>
-        <NavLink to="/login">
-          <Button
-            variant="link"
-            textAlign="left"
-            whiteSpace="normal"
-            fontSize="lg"
-            marginX={2}
-          >
-            LogIn
-          </Button>
-        </NavLink>
+        <Center flex="1">
+          <Text color={color} fontSize="xl" fontWeight="bold">
+            Promote-me |{' '}
+            <Box as="span" className="typed-element" />
+          </Text>
+        </Center>
         <ColorModeSwitch />
       </HStack>
-    </>
+    </Box>
   );
 };
 
