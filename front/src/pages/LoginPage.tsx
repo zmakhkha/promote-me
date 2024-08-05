@@ -7,6 +7,7 @@ import {
   Input,
   Button,
   Stack,
+  Flex,
   useColorModeValue,
 } from "@chakra-ui/react";
 import "../styles/LoginPage.css";
@@ -27,6 +28,7 @@ const LoginPage = () => {
     "linear(to-b, gray.800, gray.600 15%, gray.200 75%)"
   );
   const cardShadowColor = useColorModeValue("md", "lg");
+
   const handleLogin = async (event) => {
     event.preventDefault();
 
@@ -37,10 +39,6 @@ const LoginPage = () => {
         { withCredentials: true }
       );
 
-      // Log the response to ensure you receive tokens
-      console.log("Login response:", response.data);
-
-      // Extract access token and refresh token from response
       const accessToken = response.data.access;
       const refreshToken = response.data.refresh;
 
@@ -48,18 +46,9 @@ const LoginPage = () => {
         throw new Error("Failed to receive tokens from server.");
       }
 
-      // Store tokens in local storage
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
-      console.log(accessToken);
 
-      // Log tokens to verify storage
-      console.log("Stored tokens:", {
-        accessToken: localStorage.getItem("accessToken"),
-        refreshToken: localStorage.getItem("refreshToken"),
-      });
-
-      // Handle successful login (e.g., redirect to a protected route)
       window.location.href = "/"; // Replace with actual redirect
     } catch (err) {
       console.error("Login error:", err);
@@ -68,19 +57,21 @@ const LoginPage = () => {
   };
 
   return (
-    <>
+    <Flex
+      direction="column"
+      minH="100vh"
+      bgGradient={gradientBgColor}
+    >
       <NaNavbar />
-      <Box
-        p={5}
-        bgGradient={gradientBgColor}
-        minH="89vh"
-        // maxH="100hv"
-        display="flex"
+      <Flex
+        flex="1"
         justifyContent="center"
         alignItems="center"
+        p={5}
       >
-        <Bubbles />
-
+        <Box display={{ base: "none", lg: "block" }} mr={5}>
+          <Bubbles />
+        </Box>
         <Card
           bg={useColorModeValue("white", "gray.800")}
           color={cardTextColor}
@@ -88,7 +79,7 @@ const LoginPage = () => {
           borderRadius="lg"
           boxShadow={cardShadowColor}
           maxW="md"
-          w={[300, 400, 500]}
+          w="full"
         >
           <CardBody>
             <Heading as="h1" mb={6} textAlign="center">
@@ -143,8 +134,8 @@ const LoginPage = () => {
             </p>
           </CardBody>
         </Card>
-      </Box>
-    </>
+      </Flex>
+    </Flex>
   );
 };
 
