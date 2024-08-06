@@ -4,7 +4,9 @@ from rest_framework import serializers
 from .models import AppUser
 from .validators import *
 from .models import Tag, TagsPerUser, AppUser as User
-
+from rest_framework import serializers
+from .models import AppUser
+import datetime
 unique_email_validator = UniqueValidator(queryset=User.objects.all(), message="This email is already in use.")
 unique_username_validator = UniqueValidator(queryset=User.objects.all(), message="This username is already in use.")
 
@@ -87,9 +89,7 @@ class TagsPerUserSerializer(serializers.ModelSerializer):
 
 
 # serializers.py
-from rest_framework import serializers
-from .models import AppUser
-import datetime
+
 
 class PlatformSerializer(serializers.Serializer):
     id = serializers.IntegerField()
@@ -150,3 +150,41 @@ class TransformedUserSerializer(serializers.ModelSerializer):
             age = today.year - obj.dateOfBirth.year - ((today.month, today.day) < (obj.dateOfBirth.month, obj.dateOfBirth.day))
             return age
         return 0
+
+
+from rest_framework import serializers
+from .models import AppUser, Tag, TagsPerUser
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ['id', 'tag']
+
+class PersonalInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AppUser
+        fields = ['firstName', 'lastName', 'image', 'country']
+    
+    def update(self, instance, validated_data):
+        instance.firstName = validated_data.get('firstName', instance.firstName)
+        instance.lastName = validated_data.get('lastName', instance.lastName)
+        instance.country = validated_data.get('country', instance.country)
+        if 'image' in validated_data:
+            instance.image = validated_data['image']
+        instance.save()
+        
+        return instance
+
+class SociallInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AppUser
+        fields = ['snapUsername', 'tiktokUsername', 'instaUsername']
+    
+    def update(self, instance, validated_data):
+        instance.snapUsername = validated_data.get('snapUsername', instance.snapUsername)
+        instance.tiktokUsername = validated_data.get('tiktokUsername', instance.tiktokUsername)
+        instance.instaUsername = validated_data.get('instaUsername', instance.instaUsername)
+
+        instance.save()
+        
+        return instance

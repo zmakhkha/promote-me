@@ -1,5 +1,5 @@
 from django.urls import path, include
-from usrinfo.views import AppUserViewSet, TagViewSet
+from usrinfo.views import AppUserViewSet, TagViewSet, UserSettingsViewSet
 from rest_framework import routers
 from .auth import AuthViewSet
 from .views import LogoutView, CheckAuthView, check_auth
@@ -7,6 +7,7 @@ from .views import LogoutView, CheckAuthView, check_auth
 
 router = routers.DefaultRouter()
 router.register(r'users', AppUserViewSet, basename='users')
+router.register(r'settings', UserSettingsViewSet, basename='settings')
 router.register(r'tags', TagViewSet, basename='tags')
 router.register(r'auth', AuthViewSet, basename='auth')
 
