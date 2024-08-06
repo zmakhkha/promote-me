@@ -42,7 +42,6 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
     kikUsername = models.CharField(max_length=255, blank=True, null=True)
     instaUsername = models.CharField(max_length=255, blank=True, null=True)
     gender = models.CharField(max_length=1, choices=GENRE_CHOICES)
-    interests = models.TextField(blank=True)
     country = models.CharField(max_length=100, blank=True, null=True)
     dateOfBirth = models.DateField(blank=True, null=True)
     image = models.ImageField(

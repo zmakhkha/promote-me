@@ -45,7 +45,7 @@ class AppUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AppUser
-        fields = ['id', 'username', 'email', 'firstName', 'lastName', 'snapUsername', 'kikUsername', 'instaUsername', 'gender', 'interests', 'country', 'dateOfBirth', 'image', 'tags']
+        fields = ['id', 'username', 'email', 'firstName', 'lastName', 'snapUsername', 'kikUsername', 'instaUsername', 'gender', 'country', 'dateOfBirth', 'image', 'tags']
     
     def update(self, instance, validated_data):
         # Handle tags
@@ -84,3 +84,69 @@ class TagsPerUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = TagsPerUser
         fields = ['id', 'user', 'tag']
+
+
+# serializers.py
+from rest_framework import serializers
+from .models import AppUser
+import datetime
+
+class PlatformSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField()
+    slug = serializers.CharField()
+    username = serializers.CharField()
+
+class TransformedUserSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    gender = serializers.CharField()
+    location = serializers.CharField(source='country')
+    background_image = serializers.ImageField(source='image')
+    parent_platforms = serializers.SerializerMethodField()
+    age = serializers.SerializerMethodField()
+    rating_top = serializers.IntegerField(default=18)  # Default or calculated value
+
+    class Meta:
+        model = AppUser
+        fields = ['id', 'name', 'gender', 'location', 'background_image', 'parent_platforms', 'age', 'rating_top']
+
+    def get_name(self, obj):
+        return f"{obj.firstName} {obj.lastName}"
+
+    def get_parent_platforms(self, obj):
+        platforms = []
+        if obj.snapUsername:
+            platforms.append({
+                'platform': {
+                    'id': 1,  # Dummy id or derive it based on your logic
+                    'name': 'Snapchat',
+                    'slug': 'snapchat',
+                    'username': obj.snapUsername,
+                }
+            })
+        if obj.kikUsername:
+            platforms.append({
+                'platform': {
+                    'id': 2,  # Dummy id or derive it based on your logic
+                    'name': 'Kik',
+                    'slug': 'kik',
+                    'username': obj.kikUsername,
+                }
+            })
+        if obj.instaUsername:
+            platforms.append({
+                'platform': {
+                    'id': 3,  # Dummy id or derive it based on your logic
+                    'name': 'Instagram',
+                    'slug': 'instagram',
+                    'username': obj.instaUsername,
+                }
+            })
+        return platforms
+
+    def get_age(self, obj):
+        if obj.dateOfBirth:
+            today = datetime.date.today()
+            age = today.year - obj.dateOfBirth.year - ((today.month, today.day) < (obj.dateOfBirth.month, obj.dateOfBirth.day))
+            return age
+        return 0

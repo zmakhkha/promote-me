@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
 from .models import AppUser, Tag, TagsPerUser
-from .serializers import AppUserSerializer, TagSerializer, TagsPerUserSerializer
+from .serializers import AppUserSerializer, TagSerializer, TagsPerUserSerializer, TransformedUserSerializer
 
 class TagViewSet(viewsets.ModelViewSet):
 	queryset = Tag.objects.all()
@@ -15,7 +15,7 @@ class TagViewSet(viewsets.ModelViewSet):
 
 class AppUserViewSet(viewsets.ModelViewSet):
 	queryset = AppUser.objects.all()
-	serializer_class = AppUserSerializer
+	serializer_class = TransformedUserSerializer
 	permission_classes = [IsAuthenticated]
 
 	@action(detail=False, methods=['GET', 'PUT'])

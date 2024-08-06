@@ -3,155 +3,78 @@ import p2 from "../assets/profile/2.jpg";
 import p3 from "../assets/profile/3.jpg";
 export default [
   {
-    id: 1,
-    name: "Rose",
-    gender: "Male",
-    location: "Piscataway, NJ",
-    background_image: p1,
-    parent_platforms: [
-      {
-        platform: {
-          id: 1,
-          name: "Snapchat",
-          slug: "snapchat",
-          username: "shaneansel",
-        },
-      },
-    ],
-    age: 19,
-    rating_top: 18,
+      "id": 1,
+      "name": "zak mks",
+      "gender": "",
+      "location": null,
+      "background_image": "http://localhost:2000/media/images/default.png",
+      "parent_platforms": [],
+      "age": -1,
+      "rating_top": 18
   },
   {
-    id: 2,
-    name: "Mathea",
-    gender: "Female",
-    location: "Nairobi, Nairobi County Provin",
-    background_image: p2,
-    parent_platforms: [
-      {
-        platform: {
-          id: 1,
-          name: "Tiktok",
-          slug: "tiktok",
-          username: "shaneansel",
-        },
-      },
-    ],
-    age: 19,
-    rating_top: 18,
+      "id": 2,
+      "name": "lexi cute",
+      "gender": "F",
+      "location": "usa",
+      "background_image": "http://localhost:2000/media/images/3.jpeg",
+      "parent_platforms": [
+          {
+              "platform": {
+                  "id": 1,
+                  "name": "Snapchat",
+                  "slug": "snapchat",
+                  "username": "snap"
+              }
+          },
+          {
+              "platform": {
+                  "id": 2,
+                  "name": "Kik",
+                  "slug": "kik",
+                  "username": "kik"
+              }
+          },
+          {
+              "platform": {
+                  "id": 3,
+                  "name": "Instagram",
+                  "slug": "instagram",
+                  "username": "insta"
+              }
+          }
+      ],
+      "age": 14,
+      "rating_top": 18
   },
   {
-    id: 3,
-    name: "Anna",
-    gender: "Male",
-    location: "Exeter, England, UK",
-    background_image: p3,
-    parent_platforms: [
-      {
-        platform: {
-          id: 1,
-          name: "instagram",
-          slug: "instagram",
-          username: "shaneansel",
-        },
-      },
-    ],
-    age: 32,
-    rating_top: 18,
+      "id": 3,
+      "name": "z z",
+      "gender": "",
+      "location": null,
+      "background_image": "http://localhost:2000/media/images/default.png",
+      "parent_platforms": [],
+      "age": 0,
+      "rating_top": 18
   },
   {
-    id: 4,
-    name: "Anna",
-    gender: "Male",
-    location: "Exeter, England, UK",
-    background_image: p3,
-    parent_platforms: [
-      {
-        platform: {
-          id: 1,
-          name: "instagram",
-          slug: "instagram",
-          username: "shaneansel",
-        },
-      },
-    ],
-    age: 32,
-    rating_top: 18,
+      "id": 4,
+      "name": " ",
+      "gender": "",
+      "location": null,
+      "background_image": "http://localhost:2000/media/images/default.png",
+      "parent_platforms": [],
+      "age": 0,
+      "rating_top": 18
   },
   {
-    id: 5,
-    name: "Anna",
-    gender: "Male",
-    location: "Exeter, England, UK",
-    background_image: p3,
-    parent_platforms: [
-      {
-        platform: {
-          id: 1,
-          name: "instagram",
-          slug: "instagram",
-          username: "shaneansel",
-        },
-      },
-    ],
-    age: 32,
-    rating_top: 18,
-  },
-  {
-    id: 6,
-    name: "Anna",
-    gender: "Male",
-    location: "Exeter, England, UK",
-    background_image: p3,
-    parent_platforms: [
-      {
-        platform: {
-          id: 1,
-          name: "instagram",
-          slug: "instagram",
-          username: "shaneansel",
-        },
-      },
-    ],
-    age: 32,
-    rating_top: 18,
-  },
-  {
-    id: 7,
-    name: "Anna",
-    gender: "Male",
-    location: "Exeter, England, UK",
-    background_image: p3,
-    parent_platforms: [
-      {
-        platform: {
-          id: 1,
-          name: "instagram",
-          slug: "instagram",
-          username: "shaneansel",
-        },
-      },
-    ],
-    age: 32,
-    rating_top: 18,
-  },
-  {
-    id: 8,
-    name: "Anna",
-    gender: "Male",
-    location: "Exeter, England, UK",
-    background_image: p3,
-    parent_platforms: [
-      {
-        platform: {
-          id: 1,
-          name: "instagram",
-          slug: "instagram",
-          username: "shaneansel",
-        },
-      },
-    ],
-    age: 32,
-    rating_top: 18,
-  },
+      "id": 5,
+      "name": "zak mks",
+      "gender": "",
+      "location": null,
+      "background_image": "http://localhost:2000/media/images/default.png",
+      "parent_platforms": [],
+      "age": 0,
+      "rating_top": 18
+  }
 ];
