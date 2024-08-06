@@ -39,7 +39,7 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
     firstName = models.CharField(max_length=30, blank=False)
     lastName = models.CharField(max_length=30, blank=False)
     snapUsername = models.CharField(max_length=255, blank=True, null=True)
-    kikUsername = models.CharField(max_length=255, blank=True, null=True)
+    tiktokUsername = models.CharField(max_length=255, blank=True, null=True)
     instaUsername = models.CharField(max_length=255, blank=True, null=True)
     gender = models.CharField(max_length=1, choices=GENRE_CHOICES)
     country = models.CharField(max_length=100, blank=True, null=True)

@@ -22,20 +22,20 @@ export interface Game {
   gender: String;
 }
 
-// const useGames = (gameQuery: GameQuery) =>
-//   useData<Game>(
-//     "/games",
-//     {
-//       params: {
-//         genres: gameQuery.genre?.id,
-//         platforms: gameQuery.platform?.id,
-//         ordering: gameQuery.sortOrder,
-//         search: gameQuery.searchText
-//       },
-//     },
-//     [gameQuery]
-//   );
+const useGames = (gameQuery: GameQuery) =>
+  useData<Game>(
+    "/users",
+    {
+      params: {
+        // genres: gameQuery.genre?.id,
+        // platforms: gameQuery.platform?.id,
+        // ordering: gameQuery.sortOrder,
+        // search: gameQuery.searchText
+      },
+    },
+    [gameQuery]
+  );
 
-const useGames = () => ({data: users, isLoading: false, error: null})
+// const useGames = () => ({data: users, isLoading: false, error: null})
 
 export default useGames;

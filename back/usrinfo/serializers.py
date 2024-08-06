@@ -45,7 +45,7 @@ class AppUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AppUser
-        fields = ['id', 'username', 'email', 'firstName', 'lastName', 'snapUsername', 'kikUsername', 'instaUsername', 'gender', 'country', 'dateOfBirth', 'image', 'tags']
+        fields = ['id', 'username', 'email', 'firstName', 'lastName', 'snapUsername', 'tiktokUsername', 'instaUsername', 'gender', 'country', 'dateOfBirth', 'image', 'tags']
     
     def update(self, instance, validated_data):
         # Handle tags
@@ -63,7 +63,7 @@ class AppUserSerializer(serializers.ModelSerializer):
         image = validated_data.pop('image', None)
         instance.image = image if image else instance.image
         instance.snapUsername = validated_data.get('snapUsername', instance.snapUsername)
-        instance.kikUsername = validated_data.get('kikUsername', instance.kikUsername)
+        instance.tiktokUsername = validated_data.get('tiktokUsername', instance.tiktokUsername)
         instance.instaUsername = validated_data.get('instaUsername', instance.instaUsername)
         
         instance.save()
@@ -124,13 +124,13 @@ class TransformedUserSerializer(serializers.ModelSerializer):
                     'username': obj.snapUsername,
                 }
             })
-        if obj.kikUsername:
+        if obj.tiktokUsername:
             platforms.append({
                 'platform': {
                     'id': 2,  # Dummy id or derive it based on your logic
-                    'name': 'Kik',
-                    'slug': 'kik',
-                    'username': obj.kikUsername,
+                    'name': 'TikTok',
+                    'slug': 'tiktok',
+                    'username': obj.tiktokUsername,
                 }
             })
         if obj.instaUsername:
