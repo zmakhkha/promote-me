@@ -9,7 +9,7 @@ const SocialMedia = ({ userData, handleChange, handleSubmit, inputBgColor }) => 
           <FormLabel color='gray.500'>Snapchat Username</FormLabel>
           <Input
             name="snapUsername"
-            value={userData.snapUsername}
+            value={userData.snapUsername || ''}
             onChange={handleChange}
             bg={inputBgColor}
           />
@@ -18,7 +18,7 @@ const SocialMedia = ({ userData, handleChange, handleSubmit, inputBgColor }) => 
           <FormLabel color='gray.500'>Kik Username</FormLabel>
           <Input
             name="kikUsername"
-            value={userData.kikUsername}
+            value={userData.kikUsername || ''}
             onChange={handleChange}
             bg={inputBgColor}
           />
@@ -27,7 +27,7 @@ const SocialMedia = ({ userData, handleChange, handleSubmit, inputBgColor }) => 
           <FormLabel color='gray.500'>Instagram Username</FormLabel>
           <Input
             name="instaUsername"
-            value={userData.instaUsername}
+            value={userData.instaUsername || ''}
             onChange={handleChange}
             bg={inputBgColor}
           />

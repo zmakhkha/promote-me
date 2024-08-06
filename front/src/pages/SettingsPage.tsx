@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Box, Heading, Flex, useColorModeValue } from "@chakra-ui/react";
+import { Box, Heading, Flex, useColorModeValue, Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import axios from "../services/api-client"; // Use your configured API client
-import SwitchSettings from "../components/SwitchSettings";
+import UserInfo from "../components/UserInfo";
+import SocialMedia from "../components/SocialMedia";
 import NavBar from "../components/NavBar";
 
 const SettingsPage = () => {
@@ -25,7 +26,7 @@ const SettingsPage = () => {
   useEffect(() => {
     // Fetch user data from the backend
     axios
-      .get("/auth/user/") // Adjust endpoint as needed
+      .get("/users/me/") // Adjust endpoint as needed
       .then((response) => {
         setUserData(response.data);
         setImagePreview(response.data.profile_image);
@@ -69,18 +70,9 @@ const SettingsPage = () => {
   const cardShadowColor = useColorModeValue("md", "lg");
 
   return (
-    <Flex
-      direction="column"
-      minH="100vh"
-      bgGradient={gradientBgColor}
-    >
+    <Flex direction="column" minH="100vh" bgGradient={gradientBgColor}>
       <NavBar />
-      <Flex
-        flex="1"
-        justifyContent="center"
-        alignItems="center"
-        p={5}
-      >
+      <Flex flex="1" justifyContent="center" alignItems="center" p={5}>
         <Box
           bg={useColorModeValue("white", "gray.800")}
           color={cardTextColor}
@@ -93,14 +85,32 @@ const SettingsPage = () => {
           <Heading as="h1" mb={6} textAlign="center">
             Settings
           </Heading>
-          <SwitchSettings 
-            userData={userData}
-            handleChange={handleChange}
-            handleImageChange={handleImageChange}
-            handleSubmit={handleSubmit}
-            imagePreview={imagePreview}
-            inputBgColor={inputBgColor}
-          />
+          <Tabs variant="enclosed">
+            <TabList>
+              <Tab>User Info</Tab>
+              <Tab>Social Media</Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel>
+                <UserInfo
+                  userData={userData}
+                  handleChange={handleChange}
+                  handleImageChange={handleImageChange}
+                  handleSubmit={handleSubmit}
+                  imagePreview={imagePreview}
+                  inputBgColor={inputBgColor}
+                />
+              </TabPanel>
+              <TabPanel>
+                <SocialMedia
+                  userData={userData}
+                  handleChange={handleChange}
+                  handleSubmit={handleSubmit}
+                  inputBgColor={inputBgColor}
+                />
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
         </Box>
       </Flex>
     </Flex>
