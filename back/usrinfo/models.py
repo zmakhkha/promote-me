@@ -3,6 +3,9 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from .validators import max_size_validator
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
+from PIL import Image
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from io import BytesIO
 
 class AppUserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
@@ -27,11 +30,11 @@ class AppUserManager(BaseUserManager):
 
 class AppUser(AbstractBaseUser, PermissionsMixin):
     GENRE_FEMALE = 'F'
-    MGENRE_MALE = 'M'
+    GENRE_MALE = 'M'
 
     GENRE_CHOICES = [
         (GENRE_FEMALE, 'FEMALE'),
-        (MGENRE_MALE, 'MALE'),
+        (GENRE_MALE, 'MALE'),
     ]
 
     username = models.CharField(max_length=30, unique=True, blank=False)
@@ -49,7 +52,7 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
         validators=[max_size_validator],
         default='images/default.png'
     )
-    
+
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -61,6 +64,24 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+    def save(self, *args, **kwargs):
+        if self.image:
+            img = Image.open(self.image)
+            width, height = img.size
+            new_width = 600
+            if width > new_width:
+                new_height = int((new_width / width) * height)
+                img = img.resize((new_width, new_height))
+
+                buffer = BytesIO()
+                img.save(buffer, format='JPEG')
+                buffer.seek(0)
+
+                self.image = InMemoryUploadedFile(
+                    buffer, 'ImageField', self.image.name, 'image/jpeg', buffer.tell, None
+                )
+        super().save(*args, **kwargs)
 
 class Tag(models.Model):
     tag = models.CharField(max_length=30, unique=True, blank=True)
