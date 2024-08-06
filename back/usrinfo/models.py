@@ -6,6 +6,7 @@ from django.db import models
 from PIL import Image
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from io import BytesIO
+from django.conf import settings
 
 class AppUserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
@@ -94,3 +95,14 @@ class TagsPerUser(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     def __str__(self):
         return F"{self.user}::{self.tag}"
+    
+class ProfileView(models.Model):
+    viewer = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='viewer_user', on_delete=models.CASCADE)
+    viewed = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='viewed_user', on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('viewer', 'viewed')
+
+    def __str__(self):
+        return f'{self.viewer.username} viewed {self.viewed.username}\'s profile'
