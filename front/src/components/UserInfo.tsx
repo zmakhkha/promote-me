@@ -1,10 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "../services/api-client";
 import getImage from "../services/getImage";
-import { Box, Avatar, Input, Button, Stack, FormControl, FormLabel, Flex, Wrap, WrapItem, Tag, TagLabel, TagCloseButton, HStack } from "@chakra-ui/react";
+import {
+  Box,
+  Avatar,
+  Input,
+  Button,
+  Stack,
+  FormControl,
+  FormLabel,
+  Flex,
+  HStack,
+  useColorModeValue
+} from "@chakra-ui/react";
 import { FaCamera } from 'react-icons/fa';
+import AsyncSelect from 'react-select/async'; // Import AsyncSelect from react-select/async
 
-const UserInfo = ({ handleChange, handleSubmit, inputBgColor }) => {
+const UserInfo = ({ handleChange, handleSubmit }) => {
   const [userData, setUserData] = useState({
     firstName: '',
     lastName: '',
@@ -14,7 +26,16 @@ const UserInfo = ({ handleChange, handleSubmit, inputBgColor }) => {
   const [interests, setInterests] = useState<string[]>([]);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | undefined>('');
-  const fileInputRef = useRef<HTMLInputElement | null>(null); // Ref for the file input
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Define colors for light and dark modes
+  const inputBgColor = useColorModeValue("gray.100", "gray.700");
+  const dropdownBgColor = useColorModeValue("white", "gray.800");
+  const dropdownTextColor = useColorModeValue("black", "white");
+  const optionBgColor = useColorModeValue("gray.100", "gray.500");
+  const optionHoverBgColor = useColorModeValue("gray.200", "gray.600");
 
   useEffect(() => {
     // Fetch user data on component mount
@@ -35,6 +56,13 @@ const UserInfo = ({ handleChange, handleSubmit, inputBgColor }) => {
         if (data.image) {
           setImagePreview(getImage(data.image));
         }
+
+        // Fetch countries data
+        const countriesResponse = await fetch('https://valid.layercode.workers.dev/list/countries?format=select&flags=true&value=code');
+        const countriesData = await countriesResponse.json();
+        setCountries(countriesData.countries);
+        const userCountry = countriesData.countries.find(c => c.value === data.country) || null;
+        setSelectedCountry(userCountry);
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
@@ -89,7 +117,7 @@ const UserInfo = ({ handleChange, handleSubmit, inputBgColor }) => {
     const formData = new FormData();
     formData.append('firstName', userData.firstName);
     formData.append('lastName', userData.lastName);
-    formData.append('country', userData.country);
+    formData.append('country', selectedCountry ? selectedCountry.value : ''); // Ensure country value is included
     formData.append('interests', interests.join(" "));
 
     if (imageFile) {
@@ -108,11 +136,27 @@ const UserInfo = ({ handleChange, handleSubmit, inputBgColor }) => {
     }
   };
 
-  // Function to trigger file input click
   const handleIconClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
+  };
+
+  // Function to filter countries based on input
+  const loadOptions = (inputValue: string, callback: (options: any[]) => void) => {
+    const filteredCountries = countries.filter((country: any) =>
+      country.label.toLowerCase().includes(inputValue.toLowerCase())
+    );
+    callback(filteredCountries);
+  };
+
+  // Update userData when a country is selected
+  const handleCountryChange = (selectedOption: any) => {
+    setSelectedCountry(selectedOption);
+    setUserData(prevData => ({
+      ...prevData,
+      country: selectedOption ? selectedOption.value : ''
+    }));
   };
 
   return (
@@ -164,29 +208,46 @@ const UserInfo = ({ handleChange, handleSubmit, inputBgColor }) => {
           </HStack>
           <FormControl>
             <FormLabel color="gray.500">Country</FormLabel>
-            <Input
-              name="country"
-              value={userData.country || ''}
-              onChange={e => setUserData(prev => ({ ...prev, country: e.target.value }))}
-              bg={inputBgColor}
+            <AsyncSelect
+              cacheOptions
+              loadOptions={loadOptions}
+              value={selectedCountry}
+              onChange={handleCountryChange} // Update userData when country is selected
+              defaultOptions={countries}
+              styles={{
+                control: (provided) => ({
+                  ...provided,
+                  backgroundColor: inputBgColor,
+                  borderColor: useColorModeValue("gray.300", "gray.600"),
+                  color: dropdownTextColor,
+                  boxShadow: 'none',
+                  '&:hover': {
+                    borderColor: useColorModeValue("gray.400", "gray.500"),
+                  },
+                }),
+                menu: (provided) => ({
+                  ...provided,
+                  backgroundColor: dropdownBgColor,
+                  color: dropdownTextColor,
+                }),
+                menuList: (provided) => ({
+                  ...provided,
+                  backgroundColor: dropdownBgColor,
+                  color: dropdownTextColor,
+                }),
+                option: (provided, state) => ({
+                  ...provided,
+                  backgroundColor: state.isFocused ? optionHoverBgColor : optionBgColor,
+                  color: dropdownTextColor,
+                }),
+                singleValue: (provided) => ({
+                  ...provided,
+                  color: dropdownTextColor,
+                }),
+              }}
             />
           </FormControl>
         </Box>
-        <Wrap mt={2}>
-          {interests.map((interest, index) => (
-            <WrapItem key={index}>
-              <Tag
-                size="md"
-                borderRadius="full"
-                variant="solid"
-                colorScheme="teal"
-              >
-                <TagLabel>{interest}</TagLabel>
-                <TagCloseButton onClick={() => removeInterest(interest)} />
-              </Tag>
-            </WrapItem>
-          ))}
-        </Wrap>
         <Button
           type="submit"
           bg="black"
