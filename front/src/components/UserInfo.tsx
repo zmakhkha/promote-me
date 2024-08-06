@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "../services/api-client";
+import getImage from "../services/getImage";
 import {
   Box,
   Avatar,
@@ -19,21 +20,19 @@ import {
 
 const UserInfo = ({
   handleChange,
-  handleImageChange,
   handleSubmit,
-  imagePreview,
   inputBgColor,
 }) => {
   const [userData, setUserData] = useState({
     firstName: '',
     lastName: '',
-    dateOfBirth: '',
+    // dateOfBirth: '',
     country: '',
     interests: '',
-    image: null,
-
   });
   const [interests, setInterests] = useState<string[]>([]);
+  const [imageFile, setImageFile] = useState<File | null>(null); // State to store the image file
+  const [imagePreview, setImagePreview] = useState<string | undefined>(''); // State to manage image preview URL
 
   useEffect(() => {
     // Fetch user data on component mount
@@ -41,19 +40,24 @@ const UserInfo = ({
       try {
         const response = await axios.get('/settings/personalInfo/');
         const data = response.data;
-        console.log("++++++|",data);
+        // console.log("++++++|", data);
         
         // Update userData state
         setUserData({
-          firstName: data.firstName || '-',
+          firstName: data.firstName || '',
           lastName: data.lastName || '',
-          dateOfBirth: data.dateOfBirth || '',
+          // dateOfBirth: data.dateOfBirth || '',
           country: data.country || '',
           interests: data.interests || '',
         });
 
         // Update interests state
         setInterests(data.interests ? data.interests.split(" ").filter(Boolean) : []);
+        
+        // Set initial image preview
+        if (data.image) {
+          setImagePreview(getImage(data.image));
+        }
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
@@ -61,6 +65,20 @@ const UserInfo = ({
 
     fetchUserData();
   }, []);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    if (file) {
+      setImageFile(file);
+
+      // Create a new FileReader to display the preview of the selected image
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string); // Update the preview with the selected image
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleInterestChange = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === " ") {
@@ -90,10 +108,29 @@ const UserInfo = ({
 
   const handleSaveChanges = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    const formData = new FormData();
+    formData.append('firstName', userData.firstName);
+    formData.append('lastName', userData.lastName);
+    // formData.append('dateOfBirth', userData.dateOfBirth);
+    formData.append('country', userData.country);
+    formData.append('interests', interests.join(" "));
+
+    // Append image file if available
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
+  
+    // Log the FormData contents
+    for (let pair of formData.entries()) {
+      console.log(`${pair[0]}: ${pair[1]}`);
+    }
+  
     try {
-      await axios.put('/settings/personalInfo/', {
-        ...userData,
-        interests: interests.join(" "),
+      const response = await axios.put('/settings/personalInfo/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
       alert('Changes saved successfully!');
     } catch (error) {
@@ -105,7 +142,7 @@ const UserInfo = ({
     <form onSubmit={handleSaveChanges}>
       <Stack spacing={4} align="center">
         <Flex direction="column" align="center">
-          <Avatar size="xl" src={imagePreview} mb={4} />
+          <Avatar borderRadius='15%' size="xl" src={imagePreview || undefined} mb={4} />
           <FormControl>
             <FormLabel color="gray.500">Change Profile Picture</FormLabel>
             <Input
@@ -137,7 +174,7 @@ const UserInfo = ({
               />
             </FormControl>
           </HStack>
-          <FormControl>
+          {/* <FormControl>
             <FormLabel color="gray.500">Date of Birth</FormLabel>
             <Input
               name="dateOfBirth"
@@ -146,7 +183,7 @@ const UserInfo = ({
               onChange={e => setUserData(prev => ({ ...prev, dateOfBirth: e.target.value }))}
               bg={inputBgColor}
             />
-          </FormControl>
+          </FormControl> */}
         </Box>
         <FormControl>
           <FormLabel color="gray.500">Country</FormLabel>

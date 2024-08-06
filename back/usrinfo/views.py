@@ -18,18 +18,13 @@ class AppUserViewSet(viewsets.ModelViewSet):
 	serializer_class = TransformedUserSerializer
 	permission_classes = [IsAuthenticated]
 
-	@action(detail=False, methods=['GET', 'PUT'])
-	def setting(self, request):
+	@action(detail=False, methods=['GET'])
+	def me(self, request):
 		user = self.request.user
 		if request.method == 'GET':
 			serializer = AppUserSerializer(user)
 			return Response(serializer.data)
 	
-		if request.method == 'PUT':
-			serializer = AppUserSerializer(user, data=request.data, partial=True)
-			serializer.is_valid(raise_exception=True)
-			self.perform_update(serializer)
-			return Response(serializer.data)
 	@action(detail=False, methods=['GET', 'PUT'])
 	def pInfoSettings(self, request):
 		user = self.request.user
