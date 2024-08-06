@@ -1,7 +1,44 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from '../services/api-client';
 import { Input, Button, Stack, FormControl, FormLabel } from '@chakra-ui/react';
 
-const SocialMedia = ({ userData, handleChange, handleSubmit, inputBgColor }) => {
+const SocialMedia = ({ inputBgColor }) => {
+  const [userData, setUserData] = useState({
+    snapUsername: '',
+    tiktokUsername: '',
+    instaUsername: '',
+  });
+
+  useEffect(() => {
+    // Fetch user data on component mount
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get('/settings/sociallInfo/');
+        setUserData(response.data);
+      } catch (error) {
+        console.error('Error fetching social media data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUserData(prevData => ({ ...prevData, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await axios.put('/settings/sociallInfo/', userData);
+      alert('Changes saved successfully!');
+    } catch (error) {
+      console.error('Error saving social media data:', error);
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit}>
       <Stack spacing={4}>
@@ -15,10 +52,10 @@ const SocialMedia = ({ userData, handleChange, handleSubmit, inputBgColor }) => 
           />
         </FormControl>
         <FormControl>
-          <FormLabel color='gray.500'>Kik Username</FormLabel>
+          <FormLabel color='gray.500'>TikTok Username</FormLabel>
           <Input
-            name="kikUsername"
-            value={userData.kikUsername || ''}
+            name="tiktokUsername"
+            value={userData.tiktokUsername || ''}
             onChange={handleChange}
             bg={inputBgColor}
           />
