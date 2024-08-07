@@ -157,20 +157,36 @@ from .models import AppUser, Tag, TagsPerUser
 
 
 
+from rest_framework import serializers
+from .models import AppUser, Tag, TagsPerUser
+
 class PersonalInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = AppUser
-        fields = ['firstName', 'lastName', 'image', 'country']
-    
+        fields = ['firstName', 'lastName', 'image', 'country', 'interests', 'aboutMe']
+
+    interests = serializers.CharField(write_only=True)
+
     def update(self, instance, validated_data):
         instance.firstName = validated_data.get('firstName', instance.firstName)
         instance.lastName = validated_data.get('lastName', instance.lastName)
         instance.country = validated_data.get('country', instance.country)
+        instance.aboutMe = validated_data.get('aboutMe', instance.aboutMe)
+
         if 'image' in validated_data:
             instance.image = validated_data['image']
+
+        if 'interests' in validated_data:
+            interests = validated_data['interests'].split()
+            instance.tags.clear()
+            for tag_name in interests:
+                tag, created = Tag.objects.get_or_create(tag=tag_name)
+                TagsPerUser.objects.create(user=instance, tag=tag)
+
         instance.save()
         
         return instance
+
 
 class SociallInfoSerializer(serializers.ModelSerializer):
     class Meta:

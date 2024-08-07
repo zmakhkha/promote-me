@@ -50,18 +50,19 @@ class AppUserViewSet(viewsets.ModelViewSet):
 			return Response(serializer.data)
 
 	
-	@action(detail=False, methods=['GET', 'PUT'])
-	def pInfoSettings(self, request):
-		user = self.request.user
-		if request.method == 'GET':
-			serializer = PersonalInfoSerializer(user)
-			return Response(serializer.data)
-	
-		if request.method == 'PUT':
-			serializer = PersonalInfoSerializer(user, data=request.data, partial=True)
-			serializer.is_valid(raise_exception=True)
-			self.perform_update(serializer)
-			return Response(serializer.data)
+@action(detail=False, methods=['GET', 'PUT'])
+def pInfoSettings(self, request):
+    user = self.request.user
+    if request.method == 'GET':
+        serializer = PersonalInfoSerializer(user)
+        return Response(serializer.data)
+    
+    if request.method == 'PUT':
+        serializer = PersonalInfoSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid(raise_exception=True):
+            self.perform_update(serializer)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LogoutView(APIView):
 	permission_classes = [AllowAny]

@@ -86,7 +86,7 @@ const SettingsPage = () => {
             Settings
           </Heading>
           <Tabs variant="enclosed">
-            <TabList>
+            <TabList justifyContent={'center'}>
               <Tab>User Info</Tab>
               <Tab>Social Media</Tab>
             </TabList>
