@@ -8,6 +8,7 @@ import AboutPage from './pages/AboutPage';
 import SettingsPage from './pages/SettingsPage';
 import NavBar from './components/NavBar';
 import ProtectedRoute from './components/ProtectedRoute';
+import ProfilePage from './pages/ProfilePage';
 // import NotFound from './pages/NotFound'; // Assuming you have a NotFound component
 
 const router = createBrowserRouter(
@@ -20,6 +21,7 @@ const router = createBrowserRouter(
       
       <Route element={<ProtectedRoute />}>
         <Route path="/" element={<ExplorePage />} />
+        <Route path="/profile" element={<ProfilePage />} />
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/settings" element={<SettingsPage />} />
       </Route>
