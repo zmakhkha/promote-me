@@ -5,6 +5,7 @@ import PlateformIconList from "./PlateformIconList";
 import Emoji from "./Emoji";
 import countriesService from "../services/countriesService";
 import getCroppedImageUrl from "../services/getCoppedImages";
+import { Navigate, useNavigate } from "react-router-dom";
 
 interface Props {
   user: User;
@@ -25,11 +26,17 @@ const UserCard = ({ user }: Props) => {
     };
 
     fetchCountryLabel();
+    console.log(user);
+    
   }, [user.location]);
+  const navigate = useNavigate();
+  const handleImageClick = () => {
+    navigate(`/friend?username=${user.username}`);
+  };
 
   return (
     <Card>
-      <Image src={getCroppedImageUrl(user.background_image)} />
+      <Image onClick={handleImageClick} src={getCroppedImageUrl(user.background_image)} />
       <CardBody>
         <HStack justify="space-between" marginBottom={2}>
           <Heading fontSize="2xl">

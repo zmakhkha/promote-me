@@ -108,7 +108,7 @@ class TransformedUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AppUser
-        fields = ['id', 'name', 'gender', 'location', 'background_image', 'parent_platforms', 'age', 'rating_top']
+        fields = ['id', 'username', 'name', 'gender', 'location', 'background_image', 'parent_platforms', 'age', 'rating_top']
 
     def get_name(self, obj):
         return f"{obj.firstName} {obj.lastName}"

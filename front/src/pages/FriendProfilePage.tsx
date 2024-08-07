@@ -1,8 +1,8 @@
 import { Flex, useColorModeValue } from "@chakra-ui/react";
 import NewNav from "../components/NewNav";
-import Profile from "../components/Profile";
+import FreindProfile from "../components/FreindProfile";
 
-const SettingsPage = () => {
+const FriendProfilePage = () => {
   const gradientBgColor = useColorModeValue(
     "linear(to-b, white, gray.200 15%, gray.600 75%)",
     "linear(to-b, gray.800, gray.600 15%, gray.200 75%)"
@@ -11,9 +11,9 @@ const SettingsPage = () => {
   return (
       <Flex direction="column" minH="100vh" bgGradient={gradientBgColor}>
         <NewNav />
-        <Profile />
+        <FreindProfile />
       </Flex>
   );
 };
 
-export default SettingsPage;
+export default FriendProfilePage;

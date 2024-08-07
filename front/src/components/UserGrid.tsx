@@ -1,5 +1,5 @@
 import { SimpleGrid, Text } from "@chakra-ui/react";
-import useUsers, { Platform } from "../hooks/useUsers";
+import useUsers from "../hooks/useUsers";
 import UserCard from "./UserCard";
 import UserCardSketelon from "./UserCardSketelon";
 import UserCardContainer from "./UserCardContainer";

@@ -21,7 +21,8 @@ import countriesService from "../services/countriesService";
 import getInstaProfile from "../services/getInstaProfile";
 import getSnapProfile from "../services/getSnapProfile";
 import getTiktokProfile from "../services/getTiktokProfile";
-const Profile = () => {
+import UserNotFoundCard from "./UserNotFoundCard";
+const FreindProfile = () => {
   const handleSnapClick = async (nbr: number) => {
     try {
       let url: string;
@@ -44,6 +45,7 @@ const Profile = () => {
   };
   const [userData, setUserData] = useState({
     profile_image: avatar,
+    username: "",
     email: "",
     firstName: "",
     lastName: "",
@@ -76,13 +78,14 @@ const Profile = () => {
         }
       }
     };
-
+    const queryParams = new URLSearchParams(location.search);
+    const username = queryParams.get("username");
     const fetchUserData = async () => {
       try {
-        const response = await axios.get("/users/profileInfo");
+        const response = await axios.get(`/users/profileInfo?username=${username}`);
         setUserData(response.data);
         setImagePreview(getImage(response.data.image) || avatar);
-        setTagsArray(response.data.tags.map((tag) => tag.tag));
+        setTagsArray(response.data.tags.map((tag: string) => tag.tag));
         fetchCountryLabel(); // Fetch country label after setting user data
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
@@ -102,6 +105,9 @@ const Profile = () => {
   const nameColor = useColorModeValue("black", "white");
   const dividerColor = useColorModeValue("gray.400", "gray.600");
 
+  if (!userData.username) {
+    return <UserNotFoundCard/>
+  }
   return (
     <Flex flex="1" justifyContent="center" alignItems="center" p={5}>
       <Box
@@ -279,4 +285,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default FreindProfile;

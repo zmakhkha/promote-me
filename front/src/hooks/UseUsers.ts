@@ -9,6 +9,7 @@ export interface Platform {
 
 export interface User {
   id: number;
+  username: string;
   name: string;
   background_image: string;
   parent_platforms: { platform: Platform }[];
