@@ -6,10 +6,10 @@ async function countriesService(searchValue: string): Promise<string | null> {
   try {
     const response = await axios.get(baseUrl);
     const countries = response.data.countries;
-    console.log('servicecountries:------->|', countries);
+    // console.log('servicecountries:------->|', countries);
 
     const country = countries.find((country: { value: string; label: string }) => country.value === searchValue);
-    console.log('servicecountries:', country);
+    // console.log('servicecountries:', country);
     
     return country ? country.label : null;
   } catch (error) {

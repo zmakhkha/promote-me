@@ -13,55 +13,87 @@ import {
   Tag,
   TagLabel,
 } from "@chakra-ui/react";
-import { FaLocationDot } from "react-icons/fa6";
+// import { FaLocationDot } from "react-icons/fa6";
 import { FaSnapchat, FaTiktok, FaInstagram } from "react-icons/fa";
 import avatar from "../assets/no-image-placeholder.webp";
 import NewNav from "../components/NewNav";
+import axios from "../services/api-client";
+import getImage from "../services/getImage";
+import countriesService from "../services/countriesService";
+import getInstaProfile from "../services/getInstaProfile";
+import getSnapProfile from "../services/getSnapProfile";
+import getTiktokProfile from "../services/getTiktokProfile";
 
 const SettingsPage = () => {
+  const handleSnapClick = async (nbr: number) => {
+    try {
+      let url: string;
+  
+      if (nbr === 1) {
+        url = await getSnapProfile(userData.snapUsername);
+      } else if (nbr === 2) {
+        url = await getInstaProfile(userData.instaUsername);
+      } else if (nbr === 3) {
+        url = await getTiktokProfile(userData.tiktokUsername);
+      } else {
+        console.error('Invalid number for profile type');
+        return;
+      }
+  
+      window.open(url, '_blank');
+    } catch (error) {
+      console.error('Error fetching profile URL:', error);
+    }
+  };
   const [userData, setUserData] = useState({
-    profile_image: "",
+    profile_image: avatar,
     email: "",
     firstName: "",
     lastName: "",
     snapUsername: "",
-    TiktokUsername: "",
+    tiktokUsername: "",
     instaUsername: "",
     gender: "",
-    interests: "",
     country: "",
     date_of_birth: "",
     score: 0,
     aboutMe: "",
+    follower_count: 0,
+    view_count: 0,
+    tags: []
   });
 
-  const [imagePreview, setImagePreview] = useState("");
+  const [imagePreview, setImagePreview] = useState(avatar);
+  const [tagsArray, setTagsArray] = useState<string[]>([]);
+  const [countryLabel, setCountryLabel] = useState<string | null>(null);
 
   useEffect(() => {
-    // Mock fetching user data with dummy data
-    const fetchUserData = () => {
-      const dummyData = {
-        profile_image: avatar,
-        email: "example@example.com",
-        firstName: "Taqsi",
-        lastName: "Ghadib",
-        snapUsername: "TaqsiSnap",
-        TiktokUsername: "TaqsiTiktok",
-        instaUsername: "TaqsiInsta",
-        gender: "Male",
-        interests: "Tag1 Tag2 Tag3 Tag4",
-        country: "Morocco",
-        date_of_birth: "1998-08-07",
-        score: 700,
-        aboutMe:
-          "This is a brief about me section. It includes some information about the user.",
-      };
-      setUserData(dummyData);
-      setImagePreview(dummyData.profile_image);
+    const fetchCountryLabel = async () => {
+      if (userData.country) {
+        try {
+          const label = await countriesService(userData.country);
+          setCountryLabel(label);
+        } catch (error) {
+          console.error("Error fetching country label:", error);
+          setCountryLabel(null); // Handle error state as needed
+        }
+      }
+    };
+
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get('/users/profileInfo');
+        setUserData(response.data);
+        setImagePreview(getImage(response.data.image) || avatar);
+        setTagsArray(response.data.tags.map(tag => tag.tag)); 
+        fetchCountryLabel(); // Fetch country label after setting user data
+      } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+      }
     };
 
     fetchUserData();
-  }, []);
+  }, [userData.country]); // Dependency on userData.country to fetch country label
 
   const inputBgColor = useColorModeValue("gray.100", "gray.700");
   const cardTextColor = useColorModeValue("gray.800", "gray.100");
@@ -70,13 +102,8 @@ const SettingsPage = () => {
     "linear(to-b, gray.800, gray.600 15%, gray.200 75%)"
   );
   const cardShadowColor = useColorModeValue("md", "lg");
-
   const nameColor = useColorModeValue("black", "white");
-  const locationColor = useColorModeValue("gray.600", "gray.300");
-  const scoreColor = useColorModeValue("gray.900", "gray.50");
   const dividerColor = useColorModeValue("gray.400", "gray.600");
-
-  const interestsArray = userData.interests.split(" ").filter(Boolean);
 
   return (
     <>
@@ -85,7 +112,7 @@ const SettingsPage = () => {
         minH="100vh"
         bgGradient={gradientBgColor}
       >
-      <NewNav />
+        <NewNav />
         <Flex flex="1" justifyContent="center" alignItems="center" p={5}>
           <Box
             flex="1"
@@ -126,15 +153,14 @@ const SettingsPage = () => {
                 fontWeight="bold"
                 color={nameColor}
               >
-                {userData.firstName} {userData.lastName}, 26
+                {userData.firstName} {userData.lastName}, {userData.age}
               </Text>
               <HStack justify="center" spacing={2} mt={2} color={nameColor}>
-                <FaLocationDot />
-                <Text>{userData.country}</Text>
+                <Text color={nameColor} fontFamily={'arial'} fontWeight={'700'}>{countryLabel}</Text>
               </HStack>
             </Box>
 
-            <Divider borderColor={dividerColor}  />
+            <Divider borderColor={dividerColor} />
 
             <HStack justifyContent={'space-around'} width={'100%'} wrap={'wrap'} justify={'center'}>
               <VStack>
@@ -145,13 +171,13 @@ const SettingsPage = () => {
               </VStack>
               <VStack>
                 <Text fontSize="lg" fontWeight="bold" color={nameColor}>
-                  156
+                  {userData.follower_count}
                 </Text>
                 <Text color={nameColor}>Followers</Text>
               </VStack>
               <VStack>
                 <Text fontSize="lg" fontWeight="bold" color={nameColor}>
-                  100
+                  {userData.view_count}
                 </Text>
                 <Text color={nameColor}>Views</Text>
               </VStack>
@@ -162,48 +188,57 @@ const SettingsPage = () => {
             <Text fontSize="lg" fontWeight="bold" color={nameColor}>
               Social Media
             </Text>
-            <HStack spacing={1}  gap={5} wrap={'wrap'} justify={'center'}>
-            <Box
-              as={Button}
-              size="sm"
-              leftIcon={<FaInstagram />}
-              bgGradient="linear(to-r, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)" // Instagram gradient
-              color="white"
-              _hover={{
-                  bgGradient: "linear(to-r, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)",
-                  opacity: 0.8,
-                }}
+            <HStack spacing={1} gap={5} wrap={'wrap'} justify={'center'}>
+              {userData.instaUsername && (
+                <Box
+                  as={Button}
+                  size="sm"
+                  leftIcon={<FaInstagram />}
+                  bgGradient="linear(to-r, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)" // Instagram gradient
+                  color="white"
+                  _hover={{
+                    bgGradient: "linear(to-r, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)",
+                    opacity: 0.8,
+                  }}
+                  onClick={() => handleSnapClick(2)}
                 >
-              Instagram
-            </Box>
-            
-            <Box
-              as={Button}
-              size="sm"
-              leftIcon={<FaTiktok />}
-              bgGradient="linear(to-r, #69C9D0, #EE1D52, #69C9D0)" // TikTok gradient
-              color="white"
-              _hover={{
-                  bgGradient: "linear(to-r, #69C9D0, #EE1D52, #69C9D0)",
-                  opacity: 0.8,
-                }}
+                  Instagram
+                </Box>
+              )}
+              {userData.tiktokUsername && (
+                <Box
+                  as={Button}
+                  size="sm"
+                  leftIcon={<FaTiktok />}
+                  bgGradient="linear(to-r, #69C9D0, #EE1D52, #69C9D0)" // TikTok gradient
+                  color="white"
+                  _hover={{
+                    bgGradient: "linear(to-r, #69C9D0, #EE1D52, #69C9D0)",
+                    opacity: 0.8,
+                  }}
+                  onClick={() => handleSnapClick(3)}
+
                 >
-              Tiktok
-            </Box>
-            <Box
-              as={Button}
-              size="sm"
-              leftIcon={<FaSnapchat />}
-              bgGradient="linear(to-r, #FFFC00, #FFFC00)" // Snapchat gradient
-              color="black"
-              _hover={{
+                  Tiktok
+                </Box>
+              )}
+              {userData.snapUsername && (
+                <Box
+                as={Button}
+                size="sm"
+                leftIcon={<FaSnapchat />}
+                bgGradient="linear(to-r, #FFFC00, #FFFC00)" // Snapchat gradient
+                color="black"
+                _hover={{
                   bgGradient: "linear(to-r, #FFFC00, #FFFC00)",
                   opacity: 0.8,
                 }}
-                >
-              Snapchat
-            </Box>
-          </HStack>
+                onClick={() => handleSnapClick(1)}
+              >
+                Snapchat
+              </Box>
+            )}
+            </HStack>
 
             <Divider borderColor={dividerColor} />
 
@@ -217,9 +252,9 @@ const SettingsPage = () => {
               Interests
             </Text>
             <HStack spacing={2} wrap="wrap" justify="center">
-              {interestsArray.map((interest, index) => (
+              {tagsArray.map((tag, index) => (
                 <Tag key={index} size="md" variant="subtle" colorScheme="teal">
-                  <TagLabel>{interest}</TagLabel>
+                  <TagLabel>{tag}</TagLabel>
                 </Tag>
               ))}
             </HStack>
@@ -235,7 +270,7 @@ const SettingsPage = () => {
               About Me
             </Text>
             <Textarea
-              value={userData.aboutMe}
+              value={userData.aboutMe || ""}
               isReadOnly
               rows={4}
               resize="none"

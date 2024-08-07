@@ -8,28 +8,19 @@ import {
   FaWhatsapp
 } from "react-icons/fa";
 import { IconType } from "react-icons";
+import getSnapProfile from "../services/getSnapProfile";
+import getInstaProfile from "../services/getInstaProfile";
+import getTiktokProfile from "../services/getTiktokProfile";
 
 interface Props {
   platforms: Platform[];
 }
 
-const getSnapProfile = (username: string) => {
-  if (!username) return "";
-  const prefix = 'https://www.snapchat.com/add/';
-  return prefix + username;
-};
 
-const getInstaProfile = (username: string) => {
-  if (!username) return "";
-  const prefix = 'https://www.instagram.com/';
-  return prefix + username;
-};
 
-const getTiktokProfile = (username: string) => {
-  if (!username) return "";
-  const prefix = 'https://www.tiktok.com/@';
-  return prefix + username;
-};
+
+
+
 
 const iconMap: { [key: string]: IconType } = {
   snapchat: FaSnapchatGhost,
@@ -50,7 +41,7 @@ const urlHandlerMap: { [key: string]: (username: string) => string } = {
 const PlateformIconList = ({ platforms }: Props) => {
   const handleClick = (platform: Platform) => {
     const username = platform.username;
-    console.log(username);
+    // console.log(username);
     
     const handler = urlHandlerMap[platform.slug];
     if (handler && username) {

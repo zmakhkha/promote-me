@@ -1,11 +1,8 @@
 
-const getSnapProfile = (username: String) => {
+const getSnapProfile = (username: string) => {
 	if (!username) return "";
 	const prefix = 'https://www.snapchat.com/add/';
-    const url = prefix + username
-	// const index = url.indexOf(target) + target.length;
-	// return url.slice(0, index) + 'crop/600/400/' + url.slice(index);
-	return url;
-}
+	return prefix + username;
+  };
 
 export default getSnapProfile;

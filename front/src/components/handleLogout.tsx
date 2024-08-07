@@ -25,11 +25,11 @@ const NavBar = ({ onSearch }: Props) => {
         "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
 
       // Check local storage before removing
-      console.log(
-        "Before removal:",
-        localStorage.getItem("accessToken"),
-        localStorage.getItem("refreshToken")
-      );
+      // console.log(
+      //   "Before removal:",
+      //   localStorage.getItem("accessToken"),
+      //   localStorage.getItem("refreshToken")
+      // );
 
       // Remove from local storage
       localStorage.removeItem("accessToken");

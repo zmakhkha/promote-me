@@ -6,7 +6,7 @@ from .validators import *
 from .models import Tag, TagsPerUser, AppUser as User
 from rest_framework import serializers
 from .models import AppUser, Follower, ProfileView
-import datetime
+# import datetime
 from datetime import datetime
 unique_email_validator = UniqueValidator(queryset=User.objects.all(), message="This email is already in use.")
 unique_username_validator = UniqueValidator(queryset=User.objects.all(), message="This username is already in use.")
@@ -146,7 +146,7 @@ class TransformedUserSerializer(serializers.ModelSerializer):
 
     def get_age(self, obj):
         if obj.dateOfBirth:
-            today = datetime.date.today()
+            today = datetime.today()
             age = today.year - obj.dateOfBirth.year - ((today.month, today.day) < (obj.dateOfBirth.month, obj.dateOfBirth.day))
             return age
         return 0
