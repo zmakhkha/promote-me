@@ -1,11 +1,11 @@
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
 from .models import AppUser, Tag, TagsPerUser
-from .serializers import AppUserSerializer, TagSerializer, TagsPerUserSerializer, TransformedUserSerializer, PersonalInfoSerializer
+from .serializers import AppUserSerializer, TagSerializer, TransformedUserSerializer, PersonalInfoSerializer, NavBarSerializer
 
 class TagViewSet(viewsets.ModelViewSet):
 	queryset = Tag.objects.all()
@@ -24,6 +24,14 @@ class AppUserViewSet(viewsets.ModelViewSet):
 		if request.method == 'GET':
 			serializer = AppUserSerializer(user)
 			return Response(serializer.data)
+	
+	@action(detail=False, methods=['GET'])
+	def navInfo(self, request):
+		user = self.request.user
+		if request.method == 'GET':
+			serializer = NavBarSerializer(user)
+			return Response(serializer.data)
+
 	
 	@action(detail=False, methods=['GET', 'PUT'])
 	def pInfoSettings(self, request):
@@ -45,7 +53,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 
 class LogoutView(APIView):
-	permission_classes = [IsAuthenticated]
+	permission_classes = [AllowAny]
 
 	def post(self, request):
 		try:

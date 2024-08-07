@@ -8,6 +8,7 @@ import { Game, Platform } from "../hooks/useGames";
 import SortSelector from "../components/SortSelector";
 import NavBar from "../components/NavBar";
 import UserHeading from "../components/UserHeading";
+import NewNav from "../components/NewNav";
 
 export interface GameQuery {
   genre: Genre | null;
@@ -31,9 +32,10 @@ const ExplorePage = () => {
       }}
     >
       <GridItem area="nav">
-        <NavBar
+      <NewNav/>
+        {/* <NavBar
           onSearch={(searchText) => setgameQuery({ ...gameQuery, searchText })}
-        />
+        /> */}
       </GridItem>
       <Show above="lg">
         <GridItem area="aside" paddingX={5}>

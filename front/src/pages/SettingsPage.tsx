@@ -3,7 +3,7 @@ import { Box, Heading, Flex, useColorModeValue, Tabs, TabList, TabPanels, Tab, T
 import axios from "../services/api-client"; // Use your configured API client
 import UserInfo from "../components/UserInfo";
 import SocialMedia from "../components/SocialMedia";
-import NavBar from "../components/NavBar";
+import NewNav from "../components/NewNav";
 
 const SettingsPage = () => {
   const [userData, setUserData] = useState({
@@ -71,7 +71,7 @@ const SettingsPage = () => {
 
   return (
     <Flex direction="column" minH="100vh" bgGradient={gradientBgColor}>
-      <NavBar />
+      <NewNav />
       <Flex flex="1" justifyContent="center" alignItems="center" p={5}>
         <Box
           bg={useColorModeValue("white", "gray.800")}

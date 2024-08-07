@@ -188,3 +188,8 @@ class SociallInfoSerializer(serializers.ModelSerializer):
         instance.save()
         
         return instance
+
+class NavBarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AppUser
+        fields = ['image',]

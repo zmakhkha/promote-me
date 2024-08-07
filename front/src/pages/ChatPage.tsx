@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { Box, Heading } from "@chakra-ui/react";
 import Typed from "typed.js";
-import NavBar from "../components/NavBar";
+import NewNav from "../components/NewNav";
 
 const ChatPage = () => {
   const typedElement = useRef<HTMLDivElement>(null);
@@ -22,7 +22,7 @@ const ChatPage = () => {
 
   return (
     <>
-      <NavBar />
+      <NewNav />
       <Box
         p={5}
         display="flex"
