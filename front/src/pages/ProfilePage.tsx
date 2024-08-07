@@ -13,7 +13,6 @@ import {
   Tag,
   TagLabel,
 } from "@chakra-ui/react";
-// import { FaLocationDot } from "react-icons/fa6";
 import { FaSnapchat, FaTiktok, FaInstagram } from "react-icons/fa";
 import avatar from "../assets/no-image-placeholder.webp";
 import NewNav from "../components/NewNav";
@@ -155,7 +154,7 @@ const SettingsPage = () => {
               >
                 {userData.firstName} {userData.lastName}, {userData.age}
               </Text>
-              <HStack justify="center" spacing={2} mt={2} color={nameColor}>
+              <HStack justify="center"  mt={2} color={nameColor}>
                 <Text color={nameColor} fontFamily={'arial'} fontWeight={'700'}>{countryLabel}</Text>
               </HStack>
             </Box>

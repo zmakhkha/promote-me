@@ -33,9 +33,6 @@ const ExplorePage = () => {
     >
       <GridItem area="nav">
       <NewNav/>
-        {/* <NavBar
-          onSearch={(searchText) => setgameQuery({ ...gameQuery, searchText })}
-        /> */}
       </GridItem>
       <Show above="lg">
         <GridItem area="aside" paddingX={5}>

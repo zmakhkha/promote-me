@@ -3,6 +3,9 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from .models import AppUser
+from .serializers import PersonalInfoSerializer, SociallInfoSerializer
+from rest_framework.views import APIView
 
 from .models import AppUser, Tag, TagsPerUser
 from .serializers import AppUserSerializer, TagSerializer, TransformedUserSerializer, PersonalInfoSerializer, NavBarSerializer,ProfileSerializer
@@ -33,11 +36,18 @@ class AppUserViewSet(viewsets.ModelViewSet):
 			return Response(serializer.data)
 	@action(detail=False, methods=['GET'])
 	def profileInfo(self, request):
-		user = self.request.user
-		if request.method == 'GET':
+		username = request.query_params.get('username')
+		if username:
+			try:
+				user = AppUser.objects.get(username=username)
+				serializer = ProfileSerializer(user)
+				return Response(serializer.data)
+			except AppUser.DoesNotExist:
+				return Response({"detail": "User not found"}, status=404)
+		else:
+			user = self.request.user
 			serializer = ProfileSerializer(user)
 			return Response(serializer.data)
-	
 
 	
 	@action(detail=False, methods=['GET', 'PUT'])
@@ -52,12 +62,6 @@ class AppUserViewSet(viewsets.ModelViewSet):
 			serializer.is_valid(raise_exception=True)
 			self.perform_update(serializer)
 			return Response(serializer.data)
-
-# views.py
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
 
 class LogoutView(APIView):
 	permission_classes = [AllowAny]
@@ -87,10 +91,7 @@ def check_auth(request):
 
 
 
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
-from .models import AppUser
-from .serializers import PersonalInfoSerializer, SociallInfoSerializer
+
 
 class UserSettingsViewSet(viewsets.ModelViewSet):
 	queryset = AppUser.objects.all()
