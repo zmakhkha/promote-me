@@ -16,7 +16,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import ProfilePage from "./pages/ProfilePage";
 // import NotFound from './pages/NotFound'; // Assuming you have a NotFound component
 import { Genre } from "./hooks/useGenres";
-import { Platform } from "./hooks/useGames";
+import { Platform } from "./hooks/UseUsers";
 
 export interface UserQuery {
   genre: Genre | null;

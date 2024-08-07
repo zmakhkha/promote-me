@@ -1,16 +1,15 @@
 import { SimpleGrid, Text } from "@chakra-ui/react";
-import useGames, { Platform } from "../hooks/useGames";
+import useUsers, { Platform } from "../hooks/useUsers";
 import UserCard from "./UserCard";
 import UserCardSketelon from "./UserCardSketelon";
 import UserCardContainer from "./UserCardContainer";
-import { Genre } from "../hooks/useGenres";
 import { UserQuery } from "../App";
 
 interface Props {
   UserQuery: UserQuery;
 }
 const UserGrid = ({ UserQuery }: Props) => {
-  const { data, error, isLoading } = useGames(UserQuery);
+  const { data, error, isLoading } = useUsers(UserQuery);
   // console.log("fetched data from usergrid|", data);
 
   const Skeletons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -28,9 +27,9 @@ const UserGrid = ({ UserQuery }: Props) => {
             <UserCardSketelon />
           </UserCardContainer>
         ))}
-      {data.map((game) => (
-        <UserCardContainer key={game.id}>
-          <UserCard game={game} />
+      {data.map((user) => (
+        <UserCardContainer key={user.id}>
+          <UserCard user={user} />
         </UserCardContainer>
       ))}
     </SimpleGrid>
