@@ -12,12 +12,11 @@ import {
   Button,
   Tag,
   TagLabel,
-  TagCloseButton,
 } from "@chakra-ui/react";
 import { FaLocationDot } from "react-icons/fa6";
-import { FaSnapchat } from "react-icons/fa";
-
+import { FaSnapchat, FaTiktok, FaInstagram } from "react-icons/fa";
 import avatar from "../assets/no-image-placeholder.webp";
+import NewNav from "../components/NewNav";
 
 const SettingsPage = () => {
   const [userData, setUserData] = useState({
@@ -54,7 +53,8 @@ const SettingsPage = () => {
         country: "Morocco",
         date_of_birth: "1998-08-07",
         score: 700,
-        aboutMe: "This is a brief about me section. It includes some information about the user.",
+        aboutMe:
+          "This is a brief about me section. It includes some information about the user.",
       };
       setUserData(dummyData);
       setImagePreview(dummyData.profile_image);
@@ -71,122 +71,181 @@ const SettingsPage = () => {
   );
   const cardShadowColor = useColorModeValue("md", "lg");
 
+  const nameColor = useColorModeValue("black", "white");
+  const locationColor = useColorModeValue("gray.600", "gray.300");
+  const scoreColor = useColorModeValue("gray.900", "gray.50");
+  const dividerColor = useColorModeValue("gray.400", "gray.600");
+
   const interestsArray = userData.interests.split(" ").filter(Boolean);
 
   return (
-    <Flex direction="column" minH="100vh" bgGradient={gradientBgColor}>
-      <Flex flex="1" justifyContent="center" alignItems="center" p={5}>
-        <Box
-          flex="1"
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          gap={5}
-          position="relative"
-          bg={useColorModeValue("white", "gray.800")}
-          color={cardTextColor}
-          p={8}
-          borderRadius="lg"
-          boxShadow={cardShadowColor}
-          maxW="md"
-          w="full"
-        >
-          <Flex
-            position="absolute"
-            top={-16}
-            left="50%"
-            transform="translateX(-50%)"
+    <>
+      <Flex
+        direction="column"
+        minH="100vh"
+        bgGradient={gradientBgColor}
+      >
+      <NewNav />
+        <Flex flex="1" justifyContent="center" alignItems="center" p={5}>
+          <Box
+            flex="1"
+            display="flex"
+            flexDirection="column"
             alignItems="center"
-            justifyContent="center"
+            gap={5}
+            position="relative"
+            bg={useColorModeValue("white", "gray.800")}
+            color={cardTextColor}
+            p={8}
+            borderRadius="lg"
+            boxShadow={cardShadowColor}
+            maxW="md"
+            w="full"
           >
-            <Avatar
-              size="2xl"
-              src={imagePreview || avatar}
-              borderWidth="4px"
-              borderColor={useColorModeValue("white", "gray.800")}
-              boxShadow="lg"
-            />
-          </Flex>
+            <Flex
+              position="absolute"
+              top={-16}
+              left="50%"
+              transform="translateX(-50%)"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Avatar
+                size="2xl"
+                src={imagePreview || avatar}
+                borderWidth="4px"
+                borderColor={useColorModeValue("white", "gray.800")}
+                boxShadow="lg"
+              />
+            </Flex>
 
-          <Box pt="6"  textAlign="center">
-            <Text marginTop={5} fontSize="2xl" fontWeight="bold" color={cardTextColor}>
-              {userData.firstName} {userData.lastName}, 26
-            </Text>
-            <HStack justify="center"  spacing={2} mt={2}>
-              <FaLocationDot />
-              <Text>{userData.country}</Text>
+            <Box pt="6" textAlign="center">
+              <Text
+                marginTop={5}
+                fontSize="2xl"
+                fontWeight="bold"
+                color={nameColor}
+              >
+                {userData.firstName} {userData.lastName}, 26
+              </Text>
+              <HStack justify="center" spacing={2} mt={2} color={nameColor}>
+                <FaLocationDot />
+                <Text>{userData.country}</Text>
+              </HStack>
+            </Box>
+
+            <Divider borderColor={dividerColor}  />
+
+            <HStack justifyContent={'space-around'} width={'100%'} wrap={'wrap'} justify={'center'}>
+              <VStack>
+                <Text fontSize="lg" fontWeight="bold" color={nameColor}>
+                  {userData.score}
+                </Text>
+                <Text color={nameColor}>Score</Text>
+              </VStack>
+              <VStack>
+                <Text fontSize="lg" fontWeight="bold" color={nameColor}>
+                  156
+                </Text>
+                <Text color={nameColor}>Followers</Text>
+              </VStack>
+              <VStack>
+                <Text fontSize="lg" fontWeight="bold" color={nameColor}>
+                  100
+                </Text>
+                <Text color={nameColor}>Views</Text>
+              </VStack>
             </HStack>
-          </Box>
 
-          <Divider borderColor="gray.400" mb={5} />
+            <Divider borderColor={dividerColor} />
 
-          <HStack spacing={8} mb={5}>
-            <VStack>
-              <Text fontSize="lg" fontWeight="bold">
-                {userData.score}
-              </Text>
-              <Text>Score</Text>
-            </VStack>
-            <VStack>
-              <Text fontSize="lg" fontWeight="bold">
-                700
-              </Text>
-              <Text>Followers</Text>
-            </VStack>
-            <VStack>
-              <Text fontSize="lg" fontWeight="bold">
-                700
-              </Text>
-              <Text>Views</Text>
-            </VStack>
-          </HStack>
-
-          <Divider borderColor="gray.400"  />
-
-          <Text fontSize="lg" fontWeight="bold" mb={2}>
-            Social Media
-          </Text>
-          <HStack spacing={1} mb={5}>
-            <Button size="sm" leftIcon={<FaSnapchat />}>
-              Snapchat
-            </Button>
-            <Button size="sm" leftIcon={<FaSnapchat />}>
-              Tiktok
-            </Button>
-            <Button size="sm" leftIcon={<FaSnapchat />}>
+            <Text fontSize="lg" fontWeight="bold" color={nameColor}>
+              Social Media
+            </Text>
+            <HStack spacing={1}  gap={5} wrap={'wrap'} justify={'center'}>
+            <Box
+              as={Button}
+              size="sm"
+              leftIcon={<FaInstagram />}
+              bgGradient="linear(to-r, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)" // Instagram gradient
+              color="white"
+              _hover={{
+                  bgGradient: "linear(to-r, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)",
+                  opacity: 0.8,
+                }}
+                >
               Instagram
-            </Button>
+            </Box>
+            
+            <Box
+              as={Button}
+              size="sm"
+              leftIcon={<FaTiktok />}
+              bgGradient="linear(to-r, #69C9D0, #EE1D52, #69C9D0)" // TikTok gradient
+              color="white"
+              _hover={{
+                  bgGradient: "linear(to-r, #69C9D0, #EE1D52, #69C9D0)",
+                  opacity: 0.8,
+                }}
+                >
+              Tiktok
+            </Box>
+            <Box
+              as={Button}
+              size="sm"
+              leftIcon={<FaSnapchat />}
+              bgGradient="linear(to-r, #FFFC00, #FFFC00)" // Snapchat gradient
+              color="black"
+              _hover={{
+                  bgGradient: "linear(to-r, #FFFC00, #FFFC00)",
+                  opacity: 0.8,
+                }}
+                >
+              Snapchat
+            </Box>
           </HStack>
 
-          <Divider borderColor="gray.400"  />
+            <Divider borderColor={dividerColor} />
 
-          <Text fontSize="lg" fontWeight="bold" mb={2}>
-            Interests
-          </Text>
-          <HStack spacing={2} wrap="wrap">
-            {interestsArray.map((interest, index) => (
-              <Tag key={index} size="md" variant="subtle" colorScheme="teal">
-                <TagLabel>{interest}</TagLabel>
-                <TagCloseButton />
-              </Tag>
-            ))}
-          </HStack>
+            <Text
+              fontSize="lg"
+              fontWeight="bold"
+              mb={2}
+              textAlign="center"
+              color={nameColor}
+            >
+              Interests
+            </Text>
+            <HStack spacing={2} wrap="wrap" justify="center">
+              {interestsArray.map((interest, index) => (
+                <Tag key={index} size="md" variant="subtle" colorScheme="teal">
+                  <TagLabel>{interest}</TagLabel>
+                </Tag>
+              ))}
+            </HStack>
 
-          <Divider borderColor="gray.400" />
+            <Divider borderColor={dividerColor} />
 
-          <Text fontSize="lg" fontWeight="bold" >
-            About Me
-          </Text>
-          <Textarea
-            value={userData.aboutMe}
-            isReadOnly
-            rows={4}
-            resize="none"
-            bg={inputBgColor}
-          />
-        </Box>
+            <Text
+              fontSize="lg"
+              fontWeight="bold"
+              textAlign="center"
+              color={nameColor}
+            >
+              About Me
+            </Text>
+            <Textarea
+              value={userData.aboutMe}
+              isReadOnly
+              rows={4}
+              resize="none"
+              bg={inputBgColor}
+              textAlign="center"
+            />
+          </Box>
+        </Flex>
       </Flex>
-    </Flex>
+    </>
   );
 };
 

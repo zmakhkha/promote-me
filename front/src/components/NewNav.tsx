@@ -15,6 +15,7 @@ import {
   useDisclosure,
   Stack,
   Show,
+  Hide,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import logo from "../assets/logo.webp";
@@ -74,7 +75,7 @@ const NewNav = () => {
           onClick={isOpen ? onClose : onOpen}
         />
         <HStack spacing={8} alignItems="center">
-          <Show above='sm'>
+          <Show above='769px'>
             <Image src={logo} boxSize="50px" />
           </Show>
           <HStack as="nav" spacing={4} display={{ base: "none", md: "flex" }}>
