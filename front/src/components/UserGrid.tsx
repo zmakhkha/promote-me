@@ -4,15 +4,15 @@ import UserCard from "./UserCard";
 import UserCardSketelon from "./UserCardSketelon";
 import UserCardContainer from "./UserCardContainer";
 import { Genre } from "../hooks/useGenres";
-import { GameQuery } from "../App";
+import { UserQuery } from "../App";
 
 interface Props {
-  gameQuery: GameQuery;
+  UserQuery: UserQuery;
 }
-const UserGrid = ({ gameQuery }: Props) => {
-  const { data, error, isLoading } = useGames(gameQuery);
+const UserGrid = ({ UserQuery }: Props) => {
+  const { data, error, isLoading } = useGames(UserQuery);
   // console.log("fetched data from usergrid|", data);
-  
+
   const Skeletons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   if (error) return <Text>{error}</Text>;

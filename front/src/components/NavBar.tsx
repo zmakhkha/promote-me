@@ -6,9 +6,7 @@ import ColorModeSwitch from './ColorModeSwitch';
 import { useNavigate } from 'react-router-dom';
 import axios from '../services/api-client';
 
-interface Props {
-  onSearch: (searchText: string) => void;
-}
+
 
 const NaNavBar = ({ onSearch }: Props) => {
   const navigate = useNavigate();
@@ -23,23 +21,9 @@ const NaNavBar = ({ onSearch }: Props) => {
       document.cookie =
         "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
 
-      // Check local storage before removing
-      // console.log(
-      //   "Before removal:",
-      //   localStorage.getItem("accessToken"),
-      //   localStorage.getItem("refreshToken")
-      // );
-
       // Remove from local storage
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
-
-      // Check local storage after removing
-      // console.log(
-      //   "After removal:",
-      //   localStorage.getItem("accessToken"),
-      //   localStorage.getItem("refreshToken")
-      // );
 
       // Redirect to login page after logout
       navigate("/login");

@@ -1,8 +1,7 @@
-import { GameQuery } from "../App";
+import { UserQuery } from "../App";
 import useData from "./useData";
 import { Genre } from "./useGenres";
 import users from "../data/users";
-
 
 export interface Platform {
   id: number;
@@ -18,22 +17,21 @@ export interface Game {
   parent_platforms: { platform: Platform }[];
   age: number;
   rating_top: number;
-  location: string
+  location: string;
   gender: String;
 }
 
-const useGames = (gameQuery: GameQuery) =>
+const useGames = (UserQuery: UserQuery) =>
   useData<Game>(
     "/users",
     {
       params: {
-        // genres: gameQuery.genre?.id,
-        // platforms: gameQuery.platform?.id,
-        // ordering: gameQuery.sortOrder,
-        // search: gameQuery.searchText
+        // genres: UserQuery.genre?.id,
+        // platforms: UserQuery.platform?.id,
+        // ordering: UserQuery.sortOrder,
       },
     },
-    [gameQuery]
+    [UserQuery]
   );
 
 // const useGames = () => ({data: users, isLoading: false, error: null})

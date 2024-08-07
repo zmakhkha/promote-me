@@ -1,4 +1,4 @@
-import { GameQuery } from "../App";
+import { UserQuery } from "../App";
 import useData from "./useData"; // Assuming this hook handles data fetching
 
 export interface Platform {
@@ -18,7 +18,7 @@ export interface User {
   gender: string;
 }
 
-const useUsers = (userQuery: GameQuery) =>
+const useUsers = (userQuery: UserQuery) =>
   useData<User>(
     "/users", // Updated endpoint
     {
@@ -28,7 +28,6 @@ const useUsers = (userQuery: GameQuery) =>
         // genres: userQuery.genre?.id,
         // platforms: userQuery.platform?.id,
         // ordering: userQuery.sortOrder,
-        // search: userQuery.searchText
       },
     },
     [userQuery]

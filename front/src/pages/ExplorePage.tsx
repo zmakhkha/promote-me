@@ -10,15 +10,14 @@ import NavBar from "../components/NavBar";
 import UserHeading from "../components/UserHeading";
 import NewNav from "../components/NewNav";
 
-export interface GameQuery {
+export interface UserQuery {
   genre: Genre | null;
   platform: Platform | null;
   sortOrder: string;
-  searchText: string;
 }
 
 const ExplorePage = () => {
-  const [gameQuery, setgameQuery] = useState<GameQuery>({} as GameQuery);
+  const [UserQuery, setUserQuery] = useState<UserQuery>({} as UserQuery);
 
   return (
     <Grid
@@ -32,29 +31,29 @@ const ExplorePage = () => {
       }}
     >
       <GridItem area="nav">
-      <NewNav/>
+        <NewNav />
       </GridItem>
       <Show above="lg">
         <GridItem area="aside" paddingX={5}>
           <GenreList
-            selectedGenre={gameQuery.genre}
-            onSelectGenre={(genre) => setgameQuery({ ...gameQuery, genre })}
+            selectedGenre={UserQuery.genre}
+            onSelectGenre={(genre) => setUserQuery({ ...UserQuery, genre })}
           />
         </GridItem>
       </Show>
       <GridItem area="main">
         <Box paddingLeft={2}>
-          <UserHeading gameQuery={gameQuery} />
+          <UserHeading UserQuery={UserQuery} />
           <HStack spacing={5} marginBottom={5}>
             <SortSelector
-              sortOrder={gameQuery.sortOrder}
+              sortOrder={UserQuery.sortOrder}
               onSelectSortOrder={(sortOrder) =>
-                setgameQuery({ ...gameQuery, sortOrder })
+                setUserQuery({ ...UserQuery, sortOrder })
               }
             />
           </HStack>
         </Box>
-        <UserGrid gameQuery={gameQuery} />
+        <UserGrid UserQuery={UserQuery} />
       </GridItem>
     </Grid>
   );

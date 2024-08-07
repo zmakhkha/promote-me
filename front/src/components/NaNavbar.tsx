@@ -11,9 +11,7 @@ import Typed from "typed.js";
 import logo from "../assets/logo.webp";
 import ColorModeSwitch from "./ColorModeSwitch";
 
-interface Props {
-  onSearch: (searchText: string) => void;
-}
+
 
 const NaNavBar = ({ onSearch }: Props) => {
   const { colorMode } = useColorMode();
