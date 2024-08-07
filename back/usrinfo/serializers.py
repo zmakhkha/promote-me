@@ -5,11 +5,16 @@ from .models import AppUser
 from .validators import *
 from .models import Tag, TagsPerUser, AppUser as User
 from rest_framework import serializers
-from .models import AppUser
+from .models import AppUser, Follower, ProfileView
 import datetime
+from datetime import datetime
 unique_email_validator = UniqueValidator(queryset=User.objects.all(), message="This email is already in use.")
 unique_username_validator = UniqueValidator(queryset=User.objects.all(), message="This username is already in use.")
 
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ['id', 'tag']
 
 class SignUpSerializer(serializers.ModelSerializer):
     firstName = serializers.CharField(required=True, validators=[char_validator])
@@ -75,10 +80,6 @@ class AppUserSerializer(serializers.ModelSerializer):
         tags = TagsPerUser.objects.filter(user=obj)
         return TagSerializer(tags, many=True).data
     
-class TagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tag
-        fields = ['tag']
 
 class TagsPerUserSerializer(serializers.ModelSerializer):
     tag = TagSerializer()
@@ -88,7 +89,6 @@ class TagsPerUserSerializer(serializers.ModelSerializer):
         fields = ['id', 'user', 'tag']
 
 
-# serializers.py
 
 
 class PlatformSerializer(serializers.Serializer):
@@ -155,10 +155,7 @@ class TransformedUserSerializer(serializers.ModelSerializer):
 from rest_framework import serializers
 from .models import AppUser, Tag, TagsPerUser
 
-class TagSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tag
-        fields = ['id', 'tag']
+
 
 class PersonalInfoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -193,3 +190,37 @@ class NavBarSerializer(serializers.ModelSerializer):
     class Meta:
         model = AppUser
         fields = ['image',]
+
+
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    tags = serializers.SerializerMethodField()
+    image = serializers.ImageField(required=False)  # To handle the image upload
+    age = serializers.SerializerMethodField()
+    follower_count = serializers.SerializerMethodField()
+    view_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = AppUser
+        fields = [
+             'image', 'username',  'firstName', 'lastName', 'age', 'country', 'instaUsername', 'tiktokUsername',
+             'snapUsername', 'score', 'follower_count', 'view_count', 'tags',  'aboutMe',  
+        ]
+
+    def get_tags(self, obj):
+        tags_per_user = TagsPerUser.objects.filter(user=obj)
+        return TagSerializer([tpu.tag for tpu in tags_per_user], many=True).data
+
+    def get_age(self, obj):
+        if obj.dateOfBirth:
+            today = datetime.today()
+            age = today.year - obj.dateOfBirth.year - ((today.month, today.day) < (obj.dateOfBirth.month, obj.dateOfBirth.day))
+            return age
+        return None
+
+    def get_follower_count(self, obj):
+        return Follower.objects.filter(followed=obj).count()
+
+    def get_view_count(self, obj):
+        return ProfileView.objects.filter(viewed=obj).count()

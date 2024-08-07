@@ -48,11 +48,14 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
     gender = models.CharField(max_length=1, choices=GENRE_CHOICES)
     country = models.CharField(max_length=100, blank=True, null=True)
     dateOfBirth = models.DateField(blank=True, null=True)
+    aboutMe = models.TextField(blank=True, null=True) 
+    score = models.IntegerField(default=0)
     image = models.ImageField(
         upload_to='images',
         validators=[max_size_validator],
         default='images/default.png'
     )
+    tags = models.ManyToManyField('Tag', through='TagsPerUser')
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -101,8 +104,14 @@ class ProfileView(models.Model):
     viewed = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='viewed_user', on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        unique_together = ('viewer', 'viewed')
 
     def __str__(self):
         return f'{self.viewer.username} viewed {self.viewed.username}\'s profile'
+
+class Follower(models.Model):
+    follower = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='follower_user', on_delete=models.CASCADE)
+    followed = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='followed_user', on_delete=models.CASCADE)
+    date = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.follower.username} followed {self.followed.username} on {self.date}'

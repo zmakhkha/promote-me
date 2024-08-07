@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
 from .models import AppUser, Tag, TagsPerUser
-from .serializers import AppUserSerializer, TagSerializer, TransformedUserSerializer, PersonalInfoSerializer, NavBarSerializer
+from .serializers import AppUserSerializer, TagSerializer, TransformedUserSerializer, PersonalInfoSerializer, NavBarSerializer,ProfileSerializer
 
 class TagViewSet(viewsets.ModelViewSet):
 	queryset = Tag.objects.all()
@@ -31,6 +31,13 @@ class AppUserViewSet(viewsets.ModelViewSet):
 		if request.method == 'GET':
 			serializer = NavBarSerializer(user)
 			return Response(serializer.data)
+	@action(detail=False, methods=['GET'])
+	def profileInfo(self, request):
+		user = self.request.user
+		if request.method == 'GET':
+			serializer = ProfileSerializer(user)
+			return Response(serializer.data)
+	
 
 	
 	@action(detail=False, methods=['GET', 'PUT'])
