@@ -10,7 +10,13 @@ from rest_framework.views import APIView
 from .models import AppUser, Tag, TagsPerUser
 from .serializers import AppUserSerializer, TagSerializer, TransformedUserSerializer, PersonalInfoSerializer, NavBarSerializer,ProfileSerializer
 from rest_framework.pagination import PageNumberPagination
-
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.shortcuts import get_object_or_404
+from django.utils import timezone
+from datetime import timedelta
+from .models import AppUser, ProfileView
 
 
 class TagViewSet(viewsets.ModelViewSet):
@@ -134,3 +140,31 @@ class UserSettingsViewSet(viewsets.ModelViewSet):
 			serializer.is_valid(raise_exception=True)
 			self.perform_update(serializer)
 			return Response(serializer.data)
+
+
+class ProfileViewAPI(APIView):
+    def post(self, request):
+        viewer = request.user
+        username = request.data.get('username')
+
+        if not username:
+            return Response({"detail": "Username is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        viewed_user = get_object_or_404(AppUser, username=username)
+
+        if viewer == viewed_user:
+            return Response({"detail": "You cannot view your own profile."}, status=status.HTTP_400_BAD_REQUEST)
+
+        now = timezone.now()
+
+        # Find the last view by the viewer of the same profile
+        last_view = ProfileView.objects.filter(viewer=viewer, viewed=viewed_user).order_by('-timestamp').first()
+
+        # Check if the last view was within the last hour
+        if last_view and now - last_view.timestamp < timedelta(hours=1):
+            return Response({"detail": "Profile view already recorded within the last hour."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Record the new view
+        ProfileView.objects.create(viewer=viewer, viewed=viewed_user, timestamp=now)
+
+        return Response({"detail": "Profile view recorded successfully."}, status=status.HTTP_201_CREATED)

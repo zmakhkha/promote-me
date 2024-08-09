@@ -14,7 +14,12 @@ const SocialMedia = ({ inputBgColor }) => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get('/settings/sociallInfo/');
-        setUserData(response.data);
+        console.log('Fetched user data:', response.data); // Log the fetched data
+        setUserData({
+          snapchat: response.data.snapchat || '',
+          tiktok: response.data.tiktok || '',
+          instagram: response.data.instagram || '',
+        });
       } catch (error) {
         console.error('Error fetching social media data:', error);
       }
@@ -46,7 +51,7 @@ const SocialMedia = ({ inputBgColor }) => {
           <FormLabel color='gray.500'>Snapchat Username</FormLabel>
           <Input
             name="snapchat"
-            value={userData.snapchat || ''}
+            value={userData.snapchat}
             onChange={handleChange}
             bg={inputBgColor}
           />
@@ -55,7 +60,7 @@ const SocialMedia = ({ inputBgColor }) => {
           <FormLabel color='gray.500'>TikTok Username</FormLabel>
           <Input
             name="tiktok"
-            value={userData.tiktok || ''}
+            value={userData.tiktok}
             onChange={handleChange}
             bg={inputBgColor}
           />
@@ -64,7 +69,7 @@ const SocialMedia = ({ inputBgColor }) => {
           <FormLabel color='gray.500'>Instagram Username</FormLabel>
           <Input
             name="instagram"
-            value={userData.instagram || ''}
+            value={userData.instagram}
             onChange={handleChange}
             bg={inputBgColor}
           />

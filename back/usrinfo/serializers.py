@@ -19,8 +19,8 @@ class PlatformSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'image_background']
 
 class UserPlatformSerializer(serializers.ModelSerializer):
-    platform = PlatformSerializer()
-    
+    platform = serializers.CharField(source='platform.name')  # Use the correct attribute here
+
     class Meta:
         model = UserPlatform
         fields = ['platform', 'username']
@@ -56,14 +56,12 @@ class SignUpSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-
 class AppUserSerializer(serializers.ModelSerializer):
     tags = serializers.SerializerMethodField()
-    platforms = UserPlatformSerializer(many=True)
 
     class Meta:
         model = AppUser
-        fields = ['id', 'username', 'email', 'firstName', 'lastName', 'snapUsername', 'tiktokUsername', 'instaUsername', 'gender', 'country', 'dateOfBirth', 'image', 'tags', 'platforms']
+        fields = ['id', 'username', 'email', 'firstName', 'lastName', 'gender', 'country', 'dateOfBirth', 'image', 'tags']
     
     def update(self, instance, validated_data):
         # Handle tags
@@ -74,22 +72,9 @@ class AppUserSerializer(serializers.ModelSerializer):
                 tag, created = Tag.objects.get_or_create(tag=tag_name)
                 TagsPerUser.objects.create(user=instance, tag=tag)
 
-        # Handle platforms
-        platforms_data = validated_data.pop('platforms', [])
-        UserPlatform.objects.filter(user=instance).delete()
-        for platform_data in platforms_data:
-            platform = platform_data['platform']
-            username = platform_data['username']
-            platform_instance, created = Platform.objects.get_or_create(**platform)
-            UserPlatform.objects.create(user=instance, platform=platform_instance, username=username)
-
         # Handle image and other fields
         image = validated_data.pop('image', None)
         instance.image = image if image else instance.image
-        instance.snapUsername = validated_data.get('snapUsername', instance.snapUsername)
-        instance.tiktokUsername = validated_data.get('tiktokUsername', instance.tiktokUsername)
-        instance.instaUsername = validated_data.get('instaUsername', instance.instaUsername)
-        
         instance.save()
         return instance
 
@@ -201,11 +186,22 @@ class PersonalInfoSerializer(serializers.ModelSerializer):
 
 from rest_framework import serializers
 from .models import AppUser, UserPlatform, Platform
-
 class SocialInfoSerializer(serializers.Serializer):
     snapchat = serializers.CharField(max_length=255, required=False, allow_blank=True)
     tiktok = serializers.CharField(max_length=255, required=False, allow_blank=True)
     instagram = serializers.CharField(max_length=255, required=False, allow_blank=True)
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        platforms = ['Snapchat', 'Tiktok', 'Instagram']
+        for platform_name in platforms:
+            try:
+                platform = Platform.objects.get(name=platform_name)
+                user_platform = UserPlatform.objects.get(user=instance, platform=platform)
+                representation[platform_name.lower()] = user_platform.username
+            except (Platform.DoesNotExist, UserPlatform.DoesNotExist):
+                representation[platform_name.lower()] = ''
+        return representation
 
     def update(self, instance, validated_data):
         platform_usernames = {
@@ -221,7 +217,6 @@ class SocialInfoSerializer(serializers.Serializer):
                     user=instance, platform=platform,
                     defaults={'username': new_username}
                 )
-                
                 if not created:
                     user_platform.username = new_username
                     user_platform.save()
@@ -229,10 +224,12 @@ class SocialInfoSerializer(serializers.Serializer):
         return instance
 
 
+
 class NavBarSerializer(serializers.ModelSerializer):
     class Meta:
         model = AppUser
         fields = ['image']
+
 
 class ProfileSerializer(serializers.ModelSerializer):
     tags = serializers.SerializerMethodField()
@@ -240,6 +237,9 @@ class ProfileSerializer(serializers.ModelSerializer):
     age = serializers.SerializerMethodField()
     follower_count = serializers.SerializerMethodField()
     view_count = serializers.SerializerMethodField()
+    instagram = serializers.SerializerMethodField()
+    snapchat = serializers.SerializerMethodField()
+    tiktok = serializers.SerializerMethodField()
 
     class Meta:
         model = AppUser
@@ -264,4 +264,28 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def get_view_count(self, obj):
         return ProfileView.objects.filter(viewed=obj).count()
-    
+
+    def get_platform_username(self, obj, platform_name):
+        try:
+            platform = Platform.objects.get(slug=platform_name)
+            user_platform = UserPlatform.objects.get(user=obj, platform=platform)
+            print("++++++++++", user_platform.username)
+            return user_platform.username
+        except Platform.DoesNotExist as e:
+            print(f"Platform.DoesNotExist: {e}")
+            return None
+        except UserPlatform.DoesNotExist as e:
+            print(f"UserPlatform.DoesNotExist: {e}")
+            return None
+
+    def get_instagram(self, obj):
+        print("Calling get_instagram")
+        return self.get_platform_username(obj, 'instagram')
+
+    def get_snapchat(self, obj):
+        print("Calling get_snapchat")
+        return self.get_platform_username(obj, 'snapchat')
+
+    def get_tiktok(self, obj):
+        print("Calling get_tiktok")
+        return self.get_platform_username(obj, 'tiktok')

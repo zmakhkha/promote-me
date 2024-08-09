@@ -7,8 +7,8 @@ from io import BytesIO
 from django.conf import settings
 
 class Platform(models.Model):
-    name = models.CharField(max_length=65, blank=True, null=False)
-    slug = models.CharField(max_length=65, blank=True, null=False)
+    name = models.CharField(max_length=65,unique=True, null=False)
+    slug = models.CharField(max_length=65, unique=True,  null=False)
     image_background = models.ImageField(
         upload_to='images',
         validators=[max_size_validator],
@@ -56,9 +56,6 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
     country = models.CharField(max_length=100, blank=True, null=True)
     dateOfBirth = models.DateField(blank=True, null=True)
     aboutMe = models.TextField(blank=True, null=True)
-    # snapchat = models.CharField(max_length=100, blank=True, null=True)
-    # tiktok = models.CharField(max_length=100, blank=True, null=True)
-    # instagram = models.CharField(max_length=100, blank=True, null=True)
     score = models.IntegerField(default=0)
     image = models.ImageField(
         upload_to='images',

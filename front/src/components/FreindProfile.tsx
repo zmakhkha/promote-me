@@ -28,11 +28,11 @@ const FreindProfile = () => {
       let url: string;
 
       if (nbr === 1) {
-        url = await getSnapProfile(userData.snapUsername);
+        url = await getSnapProfile(userData.snapchat);
       } else if (nbr === 2) {
-        url = await getInstaProfile(userData.instaUsername);
+        url = await getInstaProfile(userData.instagram);
       } else if (nbr === 3) {
-        url = await getTiktokProfile(userData.tiktokUsername);
+        url = await getTiktokProfile(userData.tiktok);
       } else {
         console.error("Invalid number for profile type");
         return;
@@ -49,9 +49,9 @@ const FreindProfile = () => {
     email: "",
     firstName: "",
     lastName: "",
-    snapUsername: "",
-    tiktokUsername: "",
-    instaUsername: "",
+    snapchat: "",
+    tiktok: "",
+    instagram: "",
     gender: "",
     country: "",
     date_of_birth: "",
@@ -192,7 +192,7 @@ const FreindProfile = () => {
           Social Media
         </Text>
         <HStack spacing={1} gap={5} wrap={"wrap"} justify={"center"}>
-          {userData.instaUsername && (
+          {userData.instagram && (
             <Box
               as={Button}
               size="sm"
@@ -209,7 +209,7 @@ const FreindProfile = () => {
               Instagram
             </Box>
           )}
-          {userData.tiktokUsername && (
+          {userData.tiktok && (
             <Box
               as={Button}
               size="sm"
@@ -225,7 +225,7 @@ const FreindProfile = () => {
               Tiktok
             </Box>
           )}
-          {userData.snapUsername && (
+          {userData.snapchat && (
             <Box
               as={Button}
               size="sm"
