@@ -5,6 +5,7 @@ export interface Platform {
   id: number;
   name: string;
   slug: string;
+  username: string;
 }
 
 export interface User {

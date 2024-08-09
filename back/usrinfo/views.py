@@ -3,25 +3,31 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import AppUser
-from .serializers import PersonalInfoSerializer, SociallInfoSerializer
+from .models import AppUser, Platform
+from .serializers import PlatformSerializer, PersonalInfoSerializer, SocialInfoSerializer
 from rest_framework.views import APIView
 
 from .models import AppUser, Tag, TagsPerUser
 from .serializers import AppUserSerializer, TagSerializer, TransformedUserSerializer, PersonalInfoSerializer, NavBarSerializer,ProfileSerializer
-
-
 from rest_framework.pagination import PageNumberPagination
 
-class UserPagination(PageNumberPagination):
-    page_size = 8  # Number of users per page
-    page_size_query_param = 'page_size'
-    max_page_size = 100
+
 
 class TagViewSet(viewsets.ModelViewSet):
 	queryset = Tag.objects.all()
 	serializer_class = TagSerializer
 	permission_classes = [IsAuthenticated]
+
+
+class PlatformViewSet(viewsets.ModelViewSet):
+	queryset = Platform.objects.all()
+	serializer_class = PlatformSerializer
+	permission_classes = [IsAuthenticated]
+
+class UserPagination(PageNumberPagination):
+    page_size = 8  # Number of users per page
+    page_size_query_param = 'page_size'
+    max_page_size = 100
 
 
 class AppUserViewSet(viewsets.ModelViewSet):
@@ -123,11 +129,11 @@ class UserSettingsViewSet(viewsets.ModelViewSet):
 	def sociallInfo(self, request):
 		user = self.request.user
 		if request.method == 'GET':
-			serializer = SociallInfoSerializer(user)
+			serializer = SocialInfoSerializer(user)
 			return Response(serializer.data)
 	
 		if request.method == 'PUT':
-			serializer = SociallInfoSerializer(user, data=request.data, partial=True)
+			serializer = SocialInfoSerializer(user, data=request.data, partial=True)
 			serializer.is_valid(raise_exception=True)
 			self.perform_update(serializer)
 			return Response(serializer.data)

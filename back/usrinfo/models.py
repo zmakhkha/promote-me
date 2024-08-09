@@ -1,12 +1,22 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-from .validators import max_size_validator
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from django.db import models
+from .validators import max_size_validator
 from PIL import Image
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from io import BytesIO
 from django.conf import settings
+
+class Platform(models.Model):
+    name = models.CharField(max_length=65, blank=True, null=False)
+    slug = models.CharField(max_length=65, blank=True, null=False)
+    image_background = models.ImageField(
+        upload_to='images',
+        validators=[max_size_validator],
+        default='images/default.png'
+    )
+    
+    def __str__(self):
+        return self.name
 
 class AppUserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
@@ -42,13 +52,13 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True, blank=False)
     firstName = models.CharField(max_length=30, blank=False)
     lastName = models.CharField(max_length=30, blank=False)
-    snapUsername = models.CharField(max_length=255, blank=True, null=True)
-    tiktokUsername = models.CharField(max_length=255, blank=True, null=True)
-    instaUsername = models.CharField(max_length=255, blank=True, null=True)
     gender = models.CharField(max_length=1, choices=GENRE_CHOICES)
     country = models.CharField(max_length=100, blank=True, null=True)
     dateOfBirth = models.DateField(blank=True, null=True)
-    aboutMe = models.TextField(blank=True, null=True) 
+    aboutMe = models.TextField(blank=True, null=True)
+    snapchat = models.CharField(max_length=100, blank=True, null=True)
+    tiktok = models.CharField(max_length=100, blank=True, null=True)
+    instagram = models.CharField(max_length=100, blank=True, null=True)
     score = models.IntegerField(default=0)
     image = models.ImageField(
         upload_to='images',
@@ -56,6 +66,9 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
         default='images/default.png'
     )
     tags = models.ManyToManyField('Tag', through='TagsPerUser')
+
+    # Foreign key relationships to UserPlatform model
+    platforms = models.ManyToManyField(Platform, through='UserPlatform', related_name='users')
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -92,18 +105,16 @@ class Tag(models.Model):
     def __str__(self):
         return self.tag
 
-
 class TagsPerUser(models.Model):
     user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     def __str__(self):
-        return F"{self.user}::{self.tag}"
-    
+        return f"{self.user}::{self.tag}"
+
 class ProfileView(models.Model):
     viewer = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='viewer_user', on_delete=models.CASCADE)
     viewed = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='viewed_user', on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
-
 
     def __str__(self):
         return f'{self.viewer.username} viewed {self.viewed.username}\'s profile'
@@ -115,3 +126,13 @@ class Follower(models.Model):
 
     def __str__(self):
         return f'{self.follower.username} followed {self.followed.username} on {self.date}'
+    
+
+
+class UserPlatform(models.Model):
+    user = models.ForeignKey(AppUser, related_name='user_platforms', on_delete=models.CASCADE)
+    platform = models.ForeignKey(Platform, related_name='user_platforms', on_delete=models.CASCADE)
+    username = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f'{self.user.username} on {self.platform.name} as {self.username}'

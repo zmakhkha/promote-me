@@ -1,11 +1,9 @@
 # serializers.py
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
-from .models import AppUser
+from .models import AppUser, UserPlatform
 from .validators import *
-from .models import Tag, TagsPerUser, AppUser as User
-from rest_framework import serializers
-from .models import AppUser, Follower, ProfileView
+from .models import Tag, Platform, Follower, ProfileView, Platform, TagsPerUser, AppUser as User
 # import datetime
 from datetime import datetime
 unique_email_validator = UniqueValidator(queryset=User.objects.all(), message="This email is already in use.")
@@ -15,6 +13,17 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ['id', 'tag']
+class PlatformSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Platform
+        fields = ['id', 'name', 'image_background']
+
+class UserPlatformSerializer(serializers.ModelSerializer):
+    platform = PlatformSerializer()
+    
+    class Meta:
+        model = UserPlatform
+        fields = ['platform', 'username']
 
 class SignUpSerializer(serializers.ModelSerializer):
     firstName = serializers.CharField(required=True, validators=[char_validator])
@@ -47,24 +56,32 @@ class SignUpSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
+
 class AppUserSerializer(serializers.ModelSerializer):
     tags = serializers.SerializerMethodField()
+    platforms = UserPlatformSerializer(many=True)
 
     class Meta:
         model = AppUser
-        fields = ['id', 'username', 'email', 'firstName', 'lastName', 'snapUsername', 'tiktokUsername', 'instaUsername', 'gender', 'country', 'dateOfBirth', 'image', 'tags']
+        fields = ['id', 'username', 'email', 'firstName', 'lastName', 'snapUsername', 'tiktokUsername', 'instaUsername', 'gender', 'country', 'dateOfBirth', 'image', 'tags', 'platforms']
     
     def update(self, instance, validated_data):
         # Handle tags
         tags = validated_data.pop('tags', [])
         if tags:
-            # Remove existing tags
             TagsPerUser.objects.filter(user=instance).delete()
-
-            # Add new tags
             for tag_name in tags:
                 tag, created = Tag.objects.get_or_create(tag=tag_name)
                 TagsPerUser.objects.create(user=instance, tag=tag)
+
+        # Handle platforms
+        platforms_data = validated_data.pop('platforms', [])
+        UserPlatform.objects.filter(user=instance).delete()
+        for platform_data in platforms_data:
+            platform = platform_data['platform']
+            username = platform_data['username']
+            platform_instance, created = Platform.objects.get_or_create(**platform)
+            UserPlatform.objects.create(user=instance, platform=platform_instance, username=username)
 
         # Handle image and other fields
         image = validated_data.pop('image', None)
@@ -75,7 +92,7 @@ class AppUserSerializer(serializers.ModelSerializer):
         
         instance.save()
         return instance
-    
+
     def get_tags(self, obj):
         tags = TagsPerUser.objects.filter(user=obj)
         return TagSerializer(tags, many=True).data
@@ -104,7 +121,7 @@ class TransformedUserSerializer(serializers.ModelSerializer):
     background_image = serializers.ImageField(source='image')
     parent_platforms = serializers.SerializerMethodField()
     age = serializers.SerializerMethodField()
-    rating_top = serializers.IntegerField(default=18)  # Default or calculated value
+    rating_top = serializers.IntegerField(default=18)
 
     class Meta:
         model = AppUser
@@ -114,32 +131,16 @@ class TransformedUserSerializer(serializers.ModelSerializer):
         return f"{obj.firstName} {obj.lastName}"
 
     def get_parent_platforms(self, obj):
+        user_platforms = UserPlatform.objects.filter(user=obj)
         platforms = []
-        if obj.snapUsername:
+        for user_platform in user_platforms:
+            platform = user_platform.platform
             platforms.append({
                 'platform': {
-                    'id': 1,  # Dummy id or derive it based on your logic
-                    'name': 'Snapchat',
-                    'slug': 'snapchat',
-                    'username': obj.snapUsername,
-                }
-            })
-        if obj.tiktokUsername:
-            platforms.append({
-                'platform': {
-                    'id': 2,  # Dummy id or derive it based on your logic
-                    'name': 'TikTok',
-                    'slug': 'tiktok',
-                    'username': obj.tiktokUsername,
-                }
-            })
-        if obj.instaUsername:
-            platforms.append({
-                'platform': {
-                    'id': 3,  # Dummy id or derive it based on your logic
-                    'name': 'Instagram',
-                    'slug': 'instagram',
-                    'username': obj.instaUsername,
+                    'id': platform.id,  # Ensure you have an id or use a dummy value
+                    'name': platform.name,
+                    'slug': platform.slug,
+                    'username': user_platform.username
                 }
             })
         return platforms
@@ -152,6 +153,16 @@ class TransformedUserSerializer(serializers.ModelSerializer):
         return 0
 
 
+class CustomPlatformSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField()
+    slug = serializers.CharField()
+    username = serializers.CharField()
+
+    class Meta:
+        model = Platform
+        fields = ['id', 'name', 'slug', 'username']
+        
 from rest_framework import serializers
 from .models import AppUser, Tag, TagsPerUser
 
@@ -159,6 +170,7 @@ from .models import AppUser, Tag, TagsPerUser
 
 from rest_framework import serializers
 from .models import AppUser, Tag, TagsPerUser
+
 
 class PersonalInfoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -184,35 +196,30 @@ class PersonalInfoSerializer(serializers.ModelSerializer):
                 TagsPerUser.objects.create(user=instance, tag=tag)
 
         instance.save()
-        
         return instance
 
 
-class SociallInfoSerializer(serializers.ModelSerializer):
+class SocialInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = AppUser
-        fields = ['snapUsername', 'tiktokUsername', 'instaUsername']
-    
+        fields = ['snapchat', 'tiktok', 'instagram']
+
     def update(self, instance, validated_data):
-        instance.snapUsername = validated_data.get('snapUsername', instance.snapUsername)
-        instance.tiktokUsername = validated_data.get('tiktokUsername', instance.tiktokUsername)
-        instance.instaUsername = validated_data.get('instaUsername', instance.instaUsername)
+        instance.snapchat = validated_data.get('snapchat', instance.snapchat)
+        instance.tiktok = validated_data.get('tiktok', instance.tiktok)
+        instance.instagram = validated_data.get('instagram', instance.instagram)
 
         instance.save()
-        
         return instance
 
 class NavBarSerializer(serializers.ModelSerializer):
     class Meta:
         model = AppUser
-        fields = ['image',]
-
-
-
+        fields = ['image']
 
 class ProfileSerializer(serializers.ModelSerializer):
     tags = serializers.SerializerMethodField()
-    image = serializers.ImageField(required=False)  # To handle the image upload
+    image = serializers.ImageField(required=False)
     age = serializers.SerializerMethodField()
     follower_count = serializers.SerializerMethodField()
     view_count = serializers.SerializerMethodField()
@@ -220,8 +227,8 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = AppUser
         fields = [
-             'image', 'username',  'firstName', 'lastName', 'age', 'country', 'instaUsername', 'tiktokUsername',
-             'snapUsername', 'score', 'follower_count', 'view_count', 'tags',  'aboutMe',  
+            'image', 'username', 'firstName', 'lastName', 'age', 'country', 'instagram', 'tiktok',
+            'snapchat', 'score', 'follower_count', 'view_count', 'tags', 'aboutMe',
         ]
 
     def get_tags(self, obj):
@@ -240,3 +247,4 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def get_view_count(self, obj):
         return ProfileView.objects.filter(viewed=obj).count()
+    

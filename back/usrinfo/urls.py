@@ -9,6 +9,7 @@ router = routers.DefaultRouter()
 router.register(r'users', AppUserViewSet, basename='users')
 router.register(r'settings', UserSettingsViewSet, basename='settings')
 router.register(r'tags', TagViewSet, basename='tags')
+router.register(r'genres', TagViewSet, basename='genres')
 router.register(r'auth', AuthViewSet, basename='auth')
 
 urlpatterns = [
