@@ -22,27 +22,8 @@ import getInstaProfile from "../services/getInstaProfile";
 import getSnapProfile from "../services/getSnapProfile";
 import getTiktokProfile from "../services/getTiktokProfile";
 import UserNotFoundCard from "./UserNotFoundCard";
+
 const FreindProfile = () => {
-  const handleSnapClick = async (nbr: number) => {
-    try {
-      let url: string;
-
-      if (nbr === 1) {
-        url = await getSnapProfile(userData.snapchat);
-      } else if (nbr === 2) {
-        url = await getInstaProfile(userData.instagram);
-      } else if (nbr === 3) {
-        url = await getTiktokProfile(userData.tiktok);
-      } else {
-        console.error("Invalid number for profile type");
-        return;
-      }
-
-      window.open(url, "_blank");
-    } catch (error) {
-      console.error("Error fetching profile URL:", error);
-    }
-  };
   const [userData, setUserData] = useState({
     profile_image: avatar,
     username: "",
@@ -78,22 +59,54 @@ const FreindProfile = () => {
         }
       }
     };
-    const queryParams = new URLSearchParams(location.search);
-    const username = queryParams.get("username");
+
     const fetchUserData = async () => {
+      const queryParams = new URLSearchParams(window.location.search);
+      const username = queryParams.get("username");
+
+      if (!username) {
+        console.error("Username is required.");
+        return;
+      }
+
       try {
+        // Fetch user data
         const response = await axios.get(`/users/profileInfo?username=${username}`);
         setUserData(response.data);
         setImagePreview(getImage(response.data.image) || avatar);
-        setTagsArray(response.data.tags.map((tag: string) => tag.tag));
+        setTagsArray(response.data.tags.map((tag: any) => tag.tag));
         fetchCountryLabel(); // Fetch country label after setting user data
+
+        // Record profile view
+        await axios.post('/profile-view/', { username });
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
       }
     };
 
     fetchUserData();
-  }, [userData.country]); // Dependency on userData.country to fetch country label
+  }, []); // Empty dependency array to run only on component mount
+
+  const handleSnapClick = async (nbr: number) => {
+    try {
+      let url: string;
+
+      if (nbr === 1) {
+        url = await getSnapProfile(userData.snapchat);
+      } else if (nbr === 2) {
+        url = await getInstaProfile(userData.instagram);
+      } else if (nbr === 3) {
+        url = await getTiktokProfile(userData.tiktok);
+      } else {
+        console.error("Invalid number for profile type");
+        return;
+      }
+
+      window.open(url, "_blank");
+    } catch (error) {
+      console.error("Error fetching profile URL:", error);
+    }
+  };
 
   const inputBgColor = useColorModeValue("gray.100", "gray.700");
   const cardTextColor = useColorModeValue("gray.800", "gray.100");
@@ -106,8 +119,9 @@ const FreindProfile = () => {
   const dividerColor = useColorModeValue("gray.400", "gray.600");
 
   if (!userData.username) {
-    return <UserNotFoundCard/>
+    return <UserNotFoundCard />;
   }
+
   return (
     <Flex flex="1" justifyContent="center" alignItems="center" p={5}>
       <Box

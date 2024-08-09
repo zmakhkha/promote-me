@@ -146,25 +146,15 @@ class ProfileViewAPI(APIView):
     def post(self, request):
         viewer = request.user
         username = request.data.get('username')
-
+        
         if not username:
             return Response({"detail": "Username is required."}, status=status.HTTP_400_BAD_REQUEST)
-
         viewed_user = get_object_or_404(AppUser, username=username)
-
         if viewer == viewed_user:
-            return Response({"detail": "You cannot view your own profile."}, status=status.HTTP_400_BAD_REQUEST)
-
+            return Response({"detail": "You are viewing your own profile."}, status=status.HTTP_200_OK)
         now = timezone.now()
-
-        # Find the last view by the viewer of the same profile
         last_view = ProfileView.objects.filter(viewer=viewer, viewed=viewed_user).order_by('-timestamp').first()
-
-        # Check if the last view was within the last hour
         if last_view and now - last_view.timestamp < timedelta(hours=1):
             return Response({"detail": "Profile view already recorded within the last hour."}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Record the new view
         ProfileView.objects.create(viewer=viewer, viewed=viewed_user, timestamp=now)
-
         return Response({"detail": "Profile view recorded successfully."}, status=status.HTTP_201_CREATED)
