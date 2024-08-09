@@ -26,7 +26,7 @@ const UserCard = ({ user }: Props) => {
     };
 
     fetchCountryLabel();
-    console.log(user);
+    // console.log(user);
     
   }, [user.location]);
   const navigate = useNavigate();

@@ -19,7 +19,7 @@ const useData = <T>(endpoint: string, requestConfig?: AxiosRequestConfig, deps?:
       .get<FecthResponse<T>>(endpoint, { signal: controller.signal, ...requestConfig })
       .then((res) => 
         {
-          setData(res.data)
+          setData(res.data.results)
           setLoading(false)
         })
       .catch((err) => {

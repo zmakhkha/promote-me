@@ -10,6 +10,14 @@ from rest_framework.views import APIView
 from .models import AppUser, Tag, TagsPerUser
 from .serializers import AppUserSerializer, TagSerializer, TransformedUserSerializer, PersonalInfoSerializer, NavBarSerializer,ProfileSerializer
 
+
+from rest_framework.pagination import PageNumberPagination
+
+class UserPagination(PageNumberPagination):
+    page_size = 8  # Number of users per page
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
 class TagViewSet(viewsets.ModelViewSet):
 	queryset = Tag.objects.all()
 	serializer_class = TagSerializer
@@ -20,6 +28,7 @@ class AppUserViewSet(viewsets.ModelViewSet):
 	queryset = AppUser.objects.all()
 	serializer_class = TransformedUserSerializer
 	permission_classes = [IsAuthenticated]
+	pagination_class = UserPagination
 
 	@action(detail=False, methods=['GET'])
 	def me(self, request):
