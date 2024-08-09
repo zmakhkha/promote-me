@@ -199,18 +199,35 @@ class PersonalInfoSerializer(serializers.ModelSerializer):
         return instance
 
 
-class SocialInfoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AppUser
-        fields = ['snapchat', 'tiktok', 'instagram']
+from rest_framework import serializers
+from .models import AppUser, UserPlatform, Platform
+
+class SocialInfoSerializer(serializers.Serializer):
+    snapchat = serializers.CharField(max_length=255, required=False, allow_blank=True)
+    tiktok = serializers.CharField(max_length=255, required=False, allow_blank=True)
+    instagram = serializers.CharField(max_length=255, required=False, allow_blank=True)
 
     def update(self, instance, validated_data):
-        instance.snapchat = validated_data.get('snapchat', instance.snapchat)
-        instance.tiktok = validated_data.get('tiktok', instance.tiktok)
-        instance.instagram = validated_data.get('instagram', instance.instagram)
+        platform_usernames = {
+            'Snapchat': validated_data.get('snapchat'),
+            'Tiktok': validated_data.get('tiktok'),
+            'Instagram': validated_data.get('instagram'),
+        }
 
-        instance.save()
+        for platform_name, new_username in platform_usernames.items():
+            if new_username:
+                platform, created = Platform.objects.get_or_create(name=platform_name)
+                user_platform, created = UserPlatform.objects.get_or_create(
+                    user=instance, platform=platform,
+                    defaults={'username': new_username}
+                )
+                
+                if not created:
+                    user_platform.username = new_username
+                    user_platform.save()
+
         return instance
+
 
 class NavBarSerializer(serializers.ModelSerializer):
     class Meta:

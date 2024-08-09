@@ -105,10 +105,6 @@ def check_auth(request):
 		return Response({'status': 'Unauthenticated'}, status=401)
 	
 
-
-
-
-
 class UserSettingsViewSet(viewsets.ModelViewSet):
 	queryset = AppUser.objects.all()
 	serializer_class = PersonalInfoSerializer
@@ -133,6 +129,7 @@ class UserSettingsViewSet(viewsets.ModelViewSet):
 			return Response(serializer.data)
 	
 		if request.method == 'PUT':
+			print(request.data)
 			serializer = SocialInfoSerializer(user, data=request.data, partial=True)
 			serializer.is_valid(raise_exception=True)
 			self.perform_update(serializer)

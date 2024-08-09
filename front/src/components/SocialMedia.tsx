@@ -4,9 +4,9 @@ import { Input, Button, Stack, FormControl, FormLabel } from '@chakra-ui/react';
 
 const SocialMedia = ({ inputBgColor }) => {
   const [userData, setUserData] = useState({
-    snapUsername: '',
-    tiktokUsername: '',
-    instaUsername: '',
+    snapchat: '',
+    tiktok: '',
+    instagram: '',
   });
 
   useEffect(() => {
@@ -45,8 +45,8 @@ const SocialMedia = ({ inputBgColor }) => {
         <FormControl>
           <FormLabel color='gray.500'>Snapchat Username</FormLabel>
           <Input
-            name="snapUsername"
-            value={userData.snapUsername || ''}
+            name="snapchat"
+            value={userData.snapchat || ''}
             onChange={handleChange}
             bg={inputBgColor}
           />
@@ -54,8 +54,8 @@ const SocialMedia = ({ inputBgColor }) => {
         <FormControl>
           <FormLabel color='gray.500'>TikTok Username</FormLabel>
           <Input
-            name="tiktokUsername"
-            value={userData.tiktokUsername || ''}
+            name="tiktok"
+            value={userData.tiktok || ''}
             onChange={handleChange}
             bg={inputBgColor}
           />
@@ -63,8 +63,8 @@ const SocialMedia = ({ inputBgColor }) => {
         <FormControl>
           <FormLabel color='gray.500'>Instagram Username</FormLabel>
           <Input
-            name="instaUsername"
-            value={userData.instaUsername || ''}
+            name="instagram"
+            value={userData.instagram || ''}
             onChange={handleChange}
             bg={inputBgColor}
           />
