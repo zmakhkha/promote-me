@@ -27,11 +27,11 @@ const SignUpPage = () => {
     gender: "",
     dateOfBirth: "",
   });
-  const [error, setError] = useState(null);
+  const [currentError, setCurrentError] = useState("");
+  const [errorField, setErrorField] = useState("");
 
   const inputBgColor = useColorModeValue("gray.100", "gray.700");
   const cardTextColor = useColorModeValue("gray.800", "gray.100");
-  const hrefColor = useColorModeValue("gray.100", "gray.100");
   const gradientBgColor = useColorModeValue(
     "linear(to-b, white, gray.200 15%, teal.200 75%)",
     "linear(to-b, gray.800, gray.600 15%, gray.200 75%)"
@@ -41,47 +41,52 @@ const SignUpPage = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
+    // Clear the error when the user starts typing
+    if (name === errorField) {
+      setCurrentError("");
+      setErrorField("");
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (
-      !formData.username ||
-      !formData.email ||
-      !formData.firstName ||
-      !formData.lastName ||
-      !formData.password ||
-      !formData.password2 ||
-      !formData.dateOfBirth
-    ) {
-      setError("Please fill in all required fields.");
-      return;
-    }
-    if (formData.password !== formData.password2) {
-      setError("Passwords do not match.");
-      return;
-    }
+
     try {
       await axios.post("/auth/signUp/", formData);
-      window.location.href = "/login"; // Redirect to settings page for profile completion
+      window.location.href = "/login"; // Redirect to login page after successful registration
     } catch (err) {
-      setError("Registration failed. Please check your details and try again.");
+      if (err.response && err.response.data) {
+        const errorData = err.response.data;
+        // Iterate over the error fields and display the first one
+        const fields = [
+          "firstName",
+          "lastName",
+          "email",
+          "username",
+          "password",
+          "password2",
+          "gender",
+          "dateOfBirth",
+        ];
+
+        for (let field of fields) {
+          if (errorData[field]) {
+            setCurrentError(errorData[field][0]);
+            setErrorField(field);
+            break;
+          }
+        }
+      } else {
+        // Generic error message
+        setCurrentError("Registration failed. Please try again.");
+      }
     }
   };
 
   return (
-    <Flex
-      direction="column"
-      minH="100vh"
-      bgGradient={gradientBgColor}
-    >
+    <Flex direction="column" minH="100vh" bgGradient={gradientBgColor}>
       <NaNavBar />
-      <Flex
-        flex="1"
-        justifyContent="center"
-        alignItems="center"
-        p={5}
-      >
+      <Flex flex="1" justifyContent="center" alignItems="center" p={5}>
         <Box display={{ base: "none", lg: "block" }} mr={5}>
           <Bubbles />
         </Box>
@@ -108,6 +113,8 @@ const SignUpPage = () => {
                     onChange={handleChange}
                     bg={inputBgColor}
                     variant="filled"
+                    isInvalid={errorField === "firstName"}
+                    errorBorderColor="red.300"
                     required
                   />
                   <Input
@@ -117,6 +124,8 @@ const SignUpPage = () => {
                     onChange={handleChange}
                     bg={inputBgColor}
                     variant="filled"
+                    isInvalid={errorField === "lastName"}
+                    errorBorderColor="red.300"
                     required
                   />
                 </HStack>
@@ -127,6 +136,8 @@ const SignUpPage = () => {
                   onChange={handleChange}
                   bg={inputBgColor}
                   variant="filled"
+                  isInvalid={errorField === "username"}
+                  errorBorderColor="red.300"
                   required
                 />
                 <Input
@@ -137,6 +148,8 @@ const SignUpPage = () => {
                   onChange={handleChange}
                   bg={inputBgColor}
                   variant="filled"
+                  isInvalid={errorField === "email"}
+                  errorBorderColor="red.300"
                   required
                 />
                 <Input
@@ -166,6 +179,8 @@ const SignUpPage = () => {
                   onChange={handleChange}
                   bg={inputBgColor}
                   variant="filled"
+                  isInvalid={errorField === "gender"}
+                  errorBorderColor="red.300"
                   required
                 >
                   <option value="male">Male</option>
@@ -179,9 +194,11 @@ const SignUpPage = () => {
                   onChange={handleChange}
                   bg={inputBgColor}
                   variant="filled"
+                  isInvalid={errorField === "dateOfBirth"}
+                  errorBorderColor="red.300"
                   required
                 />
-                {error && (
+                {currentError && (
                   <p
                     style={{
                       color: "red",
@@ -189,7 +206,7 @@ const SignUpPage = () => {
                       marginTop: "1rem",
                     }}
                   >
-                    {error}
+                    {currentError}
                   </p>
                 )}
                 <Button
