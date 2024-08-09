@@ -61,8 +61,8 @@ const SignUpPage = () => {
         const fields = [
           "firstName",
           "lastName",
-          "email",
           "username",
+          "email",
           "password",
           "password2",
           "gender",
