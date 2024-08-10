@@ -5,7 +5,7 @@ const Bubbles = () => {
   const [bubbles, setBubbles] = useState([]);
 
   useEffect(() => {
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: any) => {
       const newBubble = {
         id: Date.now(),
         x: e.clientX,
