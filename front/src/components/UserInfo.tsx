@@ -16,6 +16,7 @@ import {
   useColorModeValue,
   Textarea,
   HStack,
+  Center,
 } from "@chakra-ui/react";
 import { FaCamera, FaTimes } from "react-icons/fa";
 import AsyncSelect from "react-select/async";
@@ -263,40 +264,56 @@ const UserInfo = () => {
               styles={{
                 control: (provided) => ({
                   ...provided,
-                  backgroundColor: inputBgColor,
+                  backgroundColor: useColorModeValue("white", "gray.700"), // Light mode: white, Dark mode: gray.700
                   borderColor: useColorModeValue("gray.300", "gray.600"),
                   color: dropdownTextColor,
                   boxShadow: "none",
                   "&:hover": {
                     borderColor: useColorModeValue("gray.400", "gray.500"),
+                    // No background change on hover
                   },
                 }),
                 menu: (provided) => ({
                   ...provided,
-                  backgroundColor: dropdownBgColor,
+                  backgroundColor: useColorModeValue("white", "gray.800"), // Light mode: white, Dark mode: gray.800
                 }),
                 singleValue: (provided) => ({
                   ...provided,
                   color: dropdownTextColor,
+                  backgroundColor: "transparent", // Ensure background of selected value is transparent
                 }),
                 dropdownIndicator: (provided) => ({
                   ...provided,
                   color: dropdownTextColor,
+                  backgroundColor: "transparent", // Ensure background of the dropdown indicator is transparent
                 }),
                 option: (provided, state) => ({
                   ...provided,
                   backgroundColor: state.isSelected
-                    ? optionBgColor
+                    ? useColorModeValue("blue.500", "blue.700") // Selected background color
                     : state.isFocused
-                    ? optionHoverBgColor
-                    : undefined,
+                    ? useColorModeValue("gray.200", "gray.600") // Hover background color
+                    : useColorModeValue("white", "gray.800"), // Default background color
+                  color:
+                    state.isSelected || state.isFocused
+                      ? useColorModeValue("white", "white") // Text color for selected or focused options
+                      : useColorModeValue("black", "white"), // Default text color
                 }),
               }}
             />
           </FormControl>
+
           <FormControl>
             <FormLabel color="gray.500">Interests</FormLabel>
-            <Flex flexWrap="wrap" gap={2} mb={4} p={2} borderWidth="1px" borderRadius="md" bg={inputBgColor}>
+            <Flex
+              flexWrap="wrap"
+              gap={2}
+              mb={4}
+              p={2}
+              borderWidth="1px"
+              borderRadius="md"
+              bg={inputBgColor}
+            >
               {tags.map((tag) => (
                 <Tag
                   key={tag.id}
@@ -305,7 +322,7 @@ const UserInfo = () => {
                   mb={2}
                   size="md"
                   variant="subtle"
-                  colorScheme={selectedTags.includes(tag.tag) ? "blue" : "gray"}
+                  colorScheme={selectedTags.includes(tag.tag) ? "green" : "gray"}
                   cursor="pointer"
                   onClick={() => handleTagClick(tag)}
                 >
@@ -315,10 +332,16 @@ const UserInfo = () => {
             </Flex>
           </FormControl>
           <FormControl>
-            <FormLabel color="gray.500">About Me</FormLabel>
-            <Text mb={2} color={aboutMeCharsLeft < 0 ? "red.500" : "gray.500"} textAlign="right">
-              {aboutMeCharsLeft} characters left
-            </Text>
+            <Flex display={'Flex'} justifyContent={"space-between"}>
+              <FormLabel color="gray.500">About Me</FormLabel>
+              <Text
+                mb={2}
+                color={aboutMeCharsLeft < 0 ? "red.500" : "gray.500"}
+                textAlign="right"
+              >
+                {aboutMeCharsLeft} characters left
+              </Text>
+            </Flex>
             <Textarea
               value={userData.aboutMe}
               onChange={handleAboutMeChange}
@@ -331,7 +354,13 @@ const UserInfo = () => {
               {message.text}
             </Box>
           )}
-          <Button type="submit" colorScheme="teal" mt={4} width="full" isDisabled={aboutMeCharsLeft < 0}>
+          <Button
+            type="submit"
+            colorScheme="teal"
+            mt={4}
+            width="full"
+            isDisabled={aboutMeCharsLeft < 0}
+          >
             Save Changes
           </Button>
         </Box>
