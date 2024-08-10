@@ -311,3 +311,15 @@ class ProfileSerializer(serializers.ModelSerializer):
     def get_tiktok(self, obj):
         print("Calling get_tiktok")
         return self.get_platform_username(obj, 'tiktok')
+
+from rest_framework import serializers
+from .models import Follower
+
+class FollowingSerializer(serializers.ModelSerializer):
+    follower_username = serializers.CharField(source='followed.username')
+    # follower_image = serializers.ImageField(source='follower.image', required=False)
+
+    class Meta:
+        model = Follower
+        # fields = ['follower_username', 'follower_image', 'date']
+        fields = ['follower_username', 'date']

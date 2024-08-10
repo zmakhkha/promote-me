@@ -44,7 +44,7 @@ const FriendProfile = () => {
     view_count: 0,
     tags: [],
   });
-
+  const [followingList, setFollowingList] = useState<string[]>([]);
   const [imagePreview, setImagePreview] = useState(avatar);
   const [tagsArray, setTagsArray] = useState<string[]>([]);
   const [countryLabel, setCountryLabel] = useState<string | null>(null);
@@ -78,8 +78,11 @@ const FriendProfile = () => {
         setImagePreview(getImage(response.data.image) || avatar);
         setTagsArray(response.data.tags.map((tag: any) => tag.tag));
         fetchCountryLabel();
-
-        setIsFollowing(response.data.isFollowing);
+        // Fetch following list to check if user is followed
+        const followingResponse = await axios.get('/following/');
+        const followedUsers = followingResponse.data.map((item: any) => item.follower_username);
+        setFollowingList(followedUsers);
+        setIsFollowing(followedUsers.includes(username));
 
         await axios.post('/profile-view/', { username });
       } catch (error) {

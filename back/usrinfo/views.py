@@ -3,8 +3,8 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import AppUser, Platform
-from .serializers import PlatformSerializer, PersonalInfoSerializer, SocialInfoSerializer
+from .models import AppUser, Follower, Platform
+from .serializers import FollowingSerializer, PlatformSerializer, PersonalInfoSerializer, SocialInfoSerializer
 from rest_framework.views import APIView
 
 from .models import AppUser, Tag, TagsPerUser
@@ -207,3 +207,10 @@ class UnfollowUserView(APIView):
         user_to_unfollow = AppUser.objects.get(username=user_to_unfollow_username)
         request.user.unfollow(user_to_unfollow)
         return Response({"detail": f"You have unfollowed {user_to_unfollow.username}."}, status=status.HTTP_200_OK)
+
+class UserFollowingList(APIView):
+    def get(self, request):
+        user = request.user
+        following = Follower.objects.filter(follower=user)
+        serializer = FollowingSerializer(following, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

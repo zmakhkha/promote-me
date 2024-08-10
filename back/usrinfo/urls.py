@@ -2,7 +2,7 @@ from django.urls import path, include
 from usrinfo.views import AppUserViewSet, TagViewSet, UserSettingsViewSet
 from rest_framework import routers
 from .auth import AuthViewSet
-from .views import FollowUserView, LogoutView, CheckAuthView, ProfileViewAPI, UnfollowUserView, check_auth
+from .views import FollowUserView, LogoutView, CheckAuthView, ProfileViewAPI, UnfollowUserView, check_auth, UserFollowingList
 
 
 router = routers.DefaultRouter()
@@ -19,6 +19,8 @@ urlpatterns = [
     path('profile-view/', ProfileViewAPI.as_view(), name='profile-view'),
     path('follow/', FollowUserView.as_view(), name='follow-view'),
     path('unfollow/', UnfollowUserView.as_view(), name='unfollow-view'),
+    path('following/', UserFollowingList.as_view(), name='following'),
+
     # path('api/check-auth/', check_auth, name='check-auth'),
     # path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]

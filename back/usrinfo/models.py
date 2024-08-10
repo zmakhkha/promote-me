@@ -173,3 +173,4 @@ class UserPlatform(models.Model):
 
     def __str__(self):
         return f'{self.user.username} on {self.platform.name} as {self.username}'
+
