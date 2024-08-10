@@ -225,7 +225,7 @@ const SignUpPage = () => {
               className="account"
               style={{ marginTop: "1rem", textAlign: "center" }}
             >
-              Already have an account? <a href="/login">Log In</a>
+              Already have an account? <a  href="/login">Log In</a>
             </p>
           </CardBody>
         </Card>

@@ -7,6 +7,7 @@ import countriesService from "../services/countriesService";
 import getCroppedImageUrl from "../services/getCoppedImages";
 import { useNavigate } from "react-router-dom";
 
+
 interface Props {
   user: User;
 }

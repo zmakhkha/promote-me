@@ -36,18 +36,35 @@ class UserPagination(PageNumberPagination):
     max_page_size = 100
 
 
+
 class AppUserViewSet(viewsets.ModelViewSet):
-    # queryset = AppUser.objects.all()
+    serializer_class = TransformedUserSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = UserPagination
+
     def get_queryset(self):
         # Exclude superusers and the authenticated user
-        return AppUser.objects.exclude(
+        queryset = AppUser.objects.exclude(
             is_superuser=True
         ).exclude(
             id=self.request.user.id
         )
-    serializer_class = TransformedUserSerializer
-    permission_classes = [IsAuthenticated]
-    pagination_class = UserPagination
+        
+        # Get the sort order from the request
+        sort_order = self.request.query_params.get('ordering', '')
+
+        # Apply sorting based on the sort order
+        if sort_order == '-added':
+            queryset = queryset.order_by('-date_joined')  # Assuming you have a `date_joined` field for "Date Added"
+        elif sort_order == '-age':
+            queryset = queryset.order_by('dateOfBirth')  # Order by age, if you have a specific field
+        elif sort_order == '-score':
+            queryset = queryset.order_by('-score')
+        else:
+            # Default sorting or "Relevance" (if you need a default ordering)
+            queryset = queryset.order_by('id')  # Change this to your preferred default ordering
+
+        return queryset
 
     @action(detail=False, methods=['GET'])
     def me(self, request):
@@ -78,19 +95,22 @@ class AppUserViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
 
     
-@action(detail=False, methods=['GET', 'PUT'])
-def pInfoSettings(self, request):
-    user = self.request.user
-    if request.method == 'GET':
-        serializer = PersonalInfoSerializer(user)
-        return Response(serializer.data)
+# @action(detail=False, methods=['GET', 'PUT'])
+# def pInfoSettings(self, request):
+#     user = self.request.user
+#     if request.method == 'GET':
+#         serializer = PersonalInfoSerializer(user)
+#         return Response(serializer.data)
     
-    if request.method == 'PUT':
-        serializer = PersonalInfoSerializer(user, data=request.data, partial=True)
-        if serializer.is_valid(raise_exception=True):
-            self.perform_update(serializer)
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     if request.method == 'PUT':
+#         print("------+++---------")
+#         print(request.data)
+#         print("------+++---------")
+#         serializer = PersonalInfoSerializer(user, data=request.data, partial=True)
+#         if serializer.is_valid(raise_exception=True):
+#             self.perform_update(serializer)
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LogoutView(APIView):
     permission_classes = [AllowAny]
@@ -130,6 +150,9 @@ class UserSettingsViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
     
         if request.method == 'PUT':
+            print("------++-------")
+            print(request.data)
+            print("------++-------")
             serializer = PersonalInfoSerializer(user, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
             self.perform_update(serializer)

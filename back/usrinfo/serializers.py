@@ -159,19 +159,24 @@ from .models import AppUser, Tag, TagsPerUser
 
 from rest_framework import serializers
 from .models import AppUser, Tag, TagsPerUser
+from django.db import transaction
+
+from django.db import transaction
+from django.db import transaction
 
 class PersonalInfoSerializer(serializers.ModelSerializer):
-    interests = serializers.SerializerMethodField()
+    interests = serializers.CharField(write_only=True, required=False)
+    interests_display = serializers.SerializerMethodField()
 
     class Meta:
         model = AppUser
-        fields = ['firstName', 'lastName', 'image', 'country', 'interests', 'aboutMe']
+        fields = ['firstName', 'lastName', 'image', 'country', 'interests', 'aboutMe', 'interests_display']
 
-    def get_interests(self, obj):
-        # Fetch the tags associated with the user and return them as a space-separated string
+    def get_interests_display(self, obj):
         tags = TagsPerUser.objects.filter(user=obj).values_list('tag__tag', flat=True)
         return ' '.join(tags)
 
+    @transaction.atomic
     def update(self, instance, validated_data):
         instance.firstName = validated_data.get('firstName', instance.firstName)
         instance.lastName = validated_data.get('lastName', instance.lastName)
@@ -183,14 +188,20 @@ class PersonalInfoSerializer(serializers.ModelSerializer):
 
         if 'interests' in validated_data:
             interests = validated_data['interests'].split()
-            # Clear existing tags and update with new ones
-            TagsPerUser.objects.filter(user=instance).delete()
+              # Clear existing tags that are not in the updated interests
+            TagsPerUser.objects.filter(user=instance).exclude(tag__tag__in=interests).delete()
+
+            # Create or get tags and associate them with the user
             for tag_name in interests:
-                tag, created = Tag.objects.get_or_create(tag=tag_name)
-                TagsPerUser.objects.create(user=instance, tag=tag)
+                tag, _ = Tag.objects.get_or_create(tag=tag_name)
+                TagsPerUser.objects.get_or_create(user=instance, tag=tag)
 
         instance.save()
         return instance
+
+
+
+
 
 
 
@@ -210,6 +221,7 @@ class SocialInfoSerializer(serializers.Serializer):
                 user_platform = UserPlatform.objects.get(user=instance, platform=platform)
                 representation[platform_name.lower()] = user_platform.username
             except (Platform.DoesNotExist, UserPlatform.DoesNotExist):
+                # print("makinach ------|")
                 representation[platform_name.lower()] = ''
         return representation
 
@@ -279,7 +291,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         try:
             platform = Platform.objects.get(slug=platform_name)
             user_platform = UserPlatform.objects.get(user=obj, platform=platform)
-            print("++++++++++", user_platform.username)
+            # print("++++++++++", user_platform.username)
             return user_platform.username
         except Platform.DoesNotExist as e:
             print(f"Platform.DoesNotExist: {e}")

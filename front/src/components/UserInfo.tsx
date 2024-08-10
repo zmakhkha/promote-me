@@ -52,6 +52,8 @@ const UserInfo = () => {
         const data = response.data;
 
         // Initialize selectedTags from fetched data
+        console.log(data.interests );
+        
         setSelectedTags(
           data.interests ? data.interests.split(" ").filter(Boolean) : []
         );
