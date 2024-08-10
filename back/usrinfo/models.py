@@ -96,6 +96,46 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
                     buffer, 'ImageField', self.image.name, 'image/jpeg', buffer.tell, None
                 )
         super().save(*args, **kwargs)
+    
+    def update_score(self, amount):
+        # Ensure that the score doesn't go below 0
+        self.score = max(0, self.score + amount)
+        self.save(update_fields=['score'])
+    
+    def follow(self, user_to_follow):
+        """
+        Follow another user.
+        """
+        if not self.is_following(user_to_follow):
+            Follower.objects.create(follower=self, followed=user_to_follow)
+            self.update_score(5)  # Increase score of the user following someone
+            # user_to_follow.update_score(10)
+
+    def unfollow(self, user_to_unfollow):
+        """
+        Unfollow a user.
+        """
+        Follower.objects.filter(follower=self, followed=user_to_unfollow).delete()
+        self.update_score(-10)  # Increase score of the user following someone
+        # user_to_unfollow.update_score(-10)
+
+    def is_following(self, user):
+        """
+        Check if the current user is following the given user.
+        """
+        return Follower.objects.filter(follower=self, followed=user).exists()
+
+    def followers(self):
+        """
+        Get all followers of the current user.
+        """
+        return AppUser.objects.filter(followed_user__followed=self)
+
+    def following(self):
+        """
+        Get all users that the current user is following.
+        """
+        return AppUser.objects.filter(follower_user__follower=self)
 
 class Tag(models.Model):
     tag = models.CharField(max_length=30, unique=True, blank=True)

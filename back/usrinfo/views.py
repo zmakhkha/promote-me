@@ -162,6 +162,28 @@ class ProfileViewAPI(APIView):
         now = timezone.now()
         last_view = ProfileView.objects.filter(viewer=viewer, viewed=viewed_user).order_by('-timestamp').first()
         if last_view and now - last_view.timestamp < timedelta(hours=1):
-            return Response({"detail": "Profile view already recorded within the last hour."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "Profile view already recorded within the last hour."}, status=status.HTTP_200_OK)
         ProfileView.objects.create(viewer=viewer, viewed=viewed_user, timestamp=now)
+        viewed_user.update_score(10)
         return Response({"detail": "Profile view recorded successfully."}, status=status.HTTP_201_CREATED)
+
+
+
+class FollowUserView(APIView):
+
+    def post(self, request, *args, **kwargs):
+        user_to_follow_username = request.data.get('username')
+        user_to_follow = AppUser.objects.get(username=user_to_follow_username)
+        request.user.follow(user_to_follow)
+        return Response({"detail": f"You are now following {user_to_follow.username}."}, status=status.HTTP_200_OK)
+
+class UnfollowUserView(APIView):
+
+    def post(self, request, *args, **kwargs):
+        print("--------")
+        print(request.data)
+        print("--------")
+        user_to_unfollow_username = request.data.get('username')
+        user_to_unfollow = AppUser.objects.get(username=user_to_unfollow_username)
+        request.user.unfollow(user_to_unfollow)
+        return Response({"detail": f"You have unfollowed {user_to_unfollow.username}."}, status=status.HTTP_200_OK)

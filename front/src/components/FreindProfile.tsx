@@ -12,8 +12,10 @@ import {
   Button,
   Tag,
   TagLabel,
+  IconButton,
 } from "@chakra-ui/react";
 import { FaSnapchat, FaTiktok, FaInstagram } from "react-icons/fa";
+import { CiCirclePlus, CiCircleMinus } from 'react-icons/ci';
 import avatar from "../assets/no-image-placeholder.webp";
 import axios from "../services/api-client";
 import getImage from "../services/getImage";
@@ -23,7 +25,7 @@ import getSnapProfile from "../services/getSnapProfile";
 import getTiktokProfile from "../services/getTiktokProfile";
 import UserNotFoundCard from "./UserNotFoundCard";
 
-const FreindProfile = () => {
+const FriendProfile = () => {
   const [userData, setUserData] = useState({
     profile_image: avatar,
     username: "",
@@ -46,6 +48,7 @@ const FreindProfile = () => {
   const [imagePreview, setImagePreview] = useState(avatar);
   const [tagsArray, setTagsArray] = useState<string[]>([]);
   const [countryLabel, setCountryLabel] = useState<string | null>(null);
+  const [isFollowing, setIsFollowing] = useState(false);
 
   useEffect(() => {
     const fetchCountryLabel = async () => {
@@ -55,7 +58,7 @@ const FreindProfile = () => {
           setCountryLabel(label);
         } catch (error) {
           console.error("Error fetching country label:", error);
-          setCountryLabel(null); // Handle error state as needed
+          setCountryLabel(null);
         }
       }
     };
@@ -70,14 +73,14 @@ const FreindProfile = () => {
       }
 
       try {
-        // Fetch user data
         const response = await axios.get(`/users/profileInfo?username=${username}`);
         setUserData(response.data);
         setImagePreview(getImage(response.data.image) || avatar);
         setTagsArray(response.data.tags.map((tag: any) => tag.tag));
-        fetchCountryLabel(); // Fetch country label after setting user data
+        fetchCountryLabel();
 
-        // Record profile view
+        setIsFollowing(response.data.isFollowing);
+
         await axios.post('/profile-view/', { username });
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
@@ -85,7 +88,32 @@ const FreindProfile = () => {
     };
 
     fetchUserData();
-  }, []); // Empty dependency array to run only on component mount
+  }, []);
+
+  const handleFollowToggle = async () => {
+    try {
+      const queryParams = new URLSearchParams(window.location.search);
+      const username = queryParams.get("username");
+
+      if (!username) {
+        console.error("Username is required.");
+        return;
+      }
+
+      if (isFollowing) {
+        await axios.post(`/unfollow/`, { username });
+      } else {
+        await axios.post(`/follow/`, { username });
+      }
+
+      setIsFollowing(!isFollowing);
+
+      const response = await axios.get(`/users/profileInfo?username=${username}`);
+      setUserData(response.data);
+    } catch (error) {
+      console.error("Error toggling follow status:", error);
+    }
+  };
 
   const handleSnapClick = async (nbr: number) => {
     try {
@@ -154,17 +182,30 @@ const FreindProfile = () => {
             borderColor={useColorModeValue("white", "gray.800")}
             boxShadow="lg"
           />
+          <IconButton
+            icon={isFollowing ? <CiCircleMinus /> : <CiCirclePlus />}
+            aria-label={isFollowing ? "Unfollow" : "Follow"}
+            onClick={handleFollowToggle}
+            position="absolute"
+            bottom={-5}
+            // right={-10}
+            colorScheme={isFollowing ? "red" : "blue"}
+            size="sm"
+            borderRadius="full"
+          />
         </Flex>
 
         <Box pt="6" textAlign="center">
-          <Text
-            marginTop={5}
-            fontSize="2xl"
-            fontWeight="bold"
-            color={nameColor}
-          >
-            {userData.firstName} {userData.lastName}, {userData.age}
-          </Text>
+          <HStack justify="center" mt={5} alignItems="center">
+            <Text
+              marginTop={5}
+              fontSize="2xl"
+              fontWeight="bold"
+              color={nameColor}
+            >
+              {userData.firstName} {userData.lastName}, {userData.age}
+            </Text>
+          </HStack>
           <HStack justify="center" mt={2} color={nameColor}>
             <Text color={nameColor} fontFamily={"arial"} fontWeight={"700"}>
               {countryLabel}
@@ -211,32 +252,15 @@ const FreindProfile = () => {
               as={Button}
               size="sm"
               leftIcon={<FaInstagram />}
-              bgGradient="linear(to-r, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)" // Instagram gradient
+              bgGradient="linear(to-r, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)"
               color="white"
               _hover={{
                 bgGradient:
                   "linear(to-r, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)",
-                opacity: 0.8,
               }}
               onClick={() => handleSnapClick(2)}
             >
               Instagram
-            </Box>
-          )}
-          {userData.tiktok && (
-            <Box
-              as={Button}
-              size="sm"
-              leftIcon={<FaTiktok />}
-              bgGradient="linear(to-r, #69C9D0, #EE1D52, #69C9D0)" // TikTok gradient
-              color="white"
-              _hover={{
-                bgGradient: "linear(to-r, #69C9D0, #EE1D52, #69C9D0)",
-                opacity: 0.8,
-              }}
-              onClick={() => handleSnapClick(3)}
-            >
-              Tiktok
             </Box>
           )}
           {userData.snapchat && (
@@ -244,59 +268,55 @@ const FreindProfile = () => {
               as={Button}
               size="sm"
               leftIcon={<FaSnapchat />}
-              bgGradient="linear(to-r, #FFFC00, #FFFC00)" // Snapchat gradient
+              bgGradient="linear(to-r, #fffc00, #fffc00)"
               color="black"
-              _hover={{
-                bgGradient: "linear(to-r, #FFFC00, #FFFC00)",
-                opacity: 0.8,
-              }}
+              _hover={{ bgGradient: "linear(to-r, #fffc00, #fffc00)" }}
               onClick={() => handleSnapClick(1)}
             >
               Snapchat
+            </Box>
+          )}
+          {userData.tiktok && (
+            <Box
+              as={Button}
+              size="sm"
+              leftIcon={<FaTiktok />}
+              bgGradient="linear(to-r, #00f2f2, #00a4ff)"
+              color="white"
+              _hover={{ bgGradient: "linear(to-r, #00f2f2, #00a4ff)" }}
+              onClick={() => handleSnapClick(3)}
+            >
+              Tiktok
             </Box>
           )}
         </HStack>
 
         <Divider borderColor={dividerColor} />
 
-        <Text
-          fontSize="lg"
-          fontWeight="bold"
-          mb={2}
-          textAlign="center"
-          color={nameColor}
-        >
+        <Text fontSize="lg" fontWeight="bold" color={nameColor}>
+          About Me
+        </Text>
+        <Textarea
+          placeholder="Write something about yourself"
+          value={userData.aboutMe}
+          isReadOnly
+          bg={inputBgColor}
+          resize="none"
+        />
+
+        <Text fontSize="lg" fontWeight="bold" color={nameColor}>
           Interests
         </Text>
-        <HStack spacing={2} wrap="wrap" justify="center">
+        <HStack spacing={2} wrap={"wrap"} justify={"center"}>
           {tagsArray.map((tag, index) => (
-            <Tag key={index} size="md" variant="subtle" colorScheme="teal">
+            <Tag key={index} colorScheme="teal" variant="solid">
               <TagLabel>{tag}</TagLabel>
             </Tag>
           ))}
         </HStack>
-
-        <Divider borderColor={dividerColor} />
-
-        <Text
-          fontSize="lg"
-          fontWeight="bold"
-          textAlign="center"
-          color={nameColor}
-        >
-          About Me
-        </Text>
-        <Textarea
-          value={userData.aboutMe || ""}
-          isReadOnly
-          rows={4}
-          resize="none"
-          bg={inputBgColor}
-          textAlign="center"
-        />
       </Box>
     </Flex>
   );
 };
 
-export default FreindProfile;
+export default FriendProfile;
