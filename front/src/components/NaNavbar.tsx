@@ -6,15 +6,19 @@ import {
   useColorMode,
   HStack,
   Image,
+  Button,
 } from "@chakra-ui/react";
 import Typed from "typed.js";
 import logo from "../assets/logo.webp";
+import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
+
 import ColorModeSwitch from "./ColorModeSwitch";
 
 
 
-const NaNavBar = ({ onSearch }: Props) => {
-  const { colorMode } = useColorMode();
+const NaNavBar = () => {
+  const { colorMode, toggleColorMode } = useColorMode();
+  
   const color = colorMode === "dark" ? "white" : "black";
   const typedRef = useRef(null);
 
@@ -44,6 +48,7 @@ const NaNavBar = ({ onSearch }: Props) => {
   }, []);
 
   return (
+  
     <Box bg="transparent" width="100%" py={4}>
       <HStack justifyContent="space-between" alignItems="center" px={4}>
         <Image src={logo} boxSize="60px" />
@@ -52,7 +57,9 @@ const NaNavBar = ({ onSearch }: Props) => {
             Promote-me | <Box as="span" className="typed-element" />
           </Text>
         </Center>
-        <ColorModeSwitch />
+        <Button ml={4} onClick={toggleColorMode}>
+            {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+          </Button>
       </HStack>
     </Box>
   );

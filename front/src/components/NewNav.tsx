@@ -65,7 +65,7 @@ const NewNav = () => {
   };
 
   return (
-    <Box borderRadius='15' margin={4} bg={colorMode === "light" ? "gray.100" : "gray.900"} px={4}>
+    <Box borderRadius='15' margin={1.5} bg={colorMode === "light" ? "gray.100" : "gray.900"} px={4}>
       <Flex h={16} alignItems="center" justifyContent="space-between">
         <IconButton
           size="md"
