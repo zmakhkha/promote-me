@@ -20,15 +20,15 @@ from .models import AppUser, ProfileView
 
 
 class TagViewSet(viewsets.ModelViewSet):
-	queryset = Tag.objects.all()
-	serializer_class = TagSerializer
-	permission_classes = [IsAuthenticated]
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class PlatformViewSet(viewsets.ModelViewSet):
-	queryset = Platform.objects.all()
-	serializer_class = PlatformSerializer
-	permission_classes = [IsAuthenticated]
+    queryset = Platform.objects.all()
+    serializer_class = PlatformSerializer
+    permission_classes = [IsAuthenticated]
 
 class UserPagination(PageNumberPagination):
     page_size = 8  # Number of users per page
@@ -37,40 +37,47 @@ class UserPagination(PageNumberPagination):
 
 
 class AppUserViewSet(viewsets.ModelViewSet):
-	queryset = AppUser.objects.all()
-	serializer_class = TransformedUserSerializer
-	permission_classes = [IsAuthenticated]
-	pagination_class = UserPagination
+    # queryset = AppUser.objects.all()
+    def get_queryset(self):
+        # Exclude superusers and the authenticated user
+        return AppUser.objects.exclude(
+            is_superuser=True
+        ).exclude(
+            id=self.request.user.id
+        )
+    serializer_class = TransformedUserSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = UserPagination
 
-	@action(detail=False, methods=['GET'])
-	def me(self, request):
-		user = self.request.user
-		if request.method == 'GET':
-			serializer = AppUserSerializer(user)
-			return Response(serializer.data)
-	
-	@action(detail=False, methods=['GET'])
-	def navInfo(self, request):
-		user = self.request.user
-		if request.method == 'GET':
-			serializer = NavBarSerializer(user)
-			return Response(serializer.data)
-	@action(detail=False, methods=['GET'])
-	def profileInfo(self, request):
-		username = request.query_params.get('username')
-		if username:
-			try:
-				user = AppUser.objects.get(username=username)
-				serializer = ProfileSerializer(user)
-				return Response(serializer.data)
-			except AppUser.DoesNotExist:
-				return Response({"detail": "User not found"}, status=404)
-		else:
-			user = self.request.user
-			serializer = ProfileSerializer(user)
-			return Response(serializer.data)
+    @action(detail=False, methods=['GET'])
+    def me(self, request):
+        user = self.request.user
+        if request.method == 'GET':
+            serializer = AppUserSerializer(user)
+            return Response(serializer.data)
+    
+    @action(detail=False, methods=['GET'])
+    def navInfo(self, request):
+        user = self.request.user
+        if request.method == 'GET':
+            serializer = NavBarSerializer(user)
+            return Response(serializer.data)
+    @action(detail=False, methods=['GET'])
+    def profileInfo(self, request):
+        username = request.query_params.get('username')
+        if username:
+            try:
+                user = AppUser.objects.get(username=username)
+                serializer = ProfileSerializer(user)
+                return Response(serializer.data)
+            except AppUser.DoesNotExist:
+                return Response({"detail": "User not found"}, status=404)
+        else:
+            user = self.request.user
+            serializer = ProfileSerializer(user)
+            return Response(serializer.data)
 
-	
+    
 @action(detail=False, methods=['GET', 'PUT'])
 def pInfoSettings(self, request):
     user = self.request.user
@@ -86,60 +93,60 @@ def pInfoSettings(self, request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LogoutView(APIView):
-	permission_classes = [AllowAny]
+    permission_classes = [AllowAny]
 
-	def post(self, request):
-		try:
-			response = Response({"detail": "Logged out successfully"}, status=status.HTTP_204_NO_CONTENT)
-			response.delete_cookie('accessToken')
-			response.delete_cookie('refreshToken')
-			return response
-		except Exception as e:
-			return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request):
+        try:
+            response = Response({"detail": "Logged out successfully"}, status=status.HTTP_204_NO_CONTENT)
+            response.delete_cookie('accessToken')
+            response.delete_cookie('refreshToken')
+            return response
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class CheckAuthView(APIView):
-	permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
-	def get(self, request):
-		return Response({"detail": "Authenticated"}, status=200)
+    def get(self, request):
+        return Response({"detail": "Authenticated"}, status=200)
 
 @api_view(['GET'])
 def check_auth(request):
-	if request.user and request.user.is_authenticated:
-		return Response({'status': 'Authenticated'})
-	else:
-		return Response({'status': 'Unauthenticated'}, status=401)
-	
+    if request.user and request.user.is_authenticated:
+        return Response({'status': 'Authenticated'})
+    else:
+        return Response({'status': 'Unauthenticated'}, status=401)
+    
 
 class UserSettingsViewSet(viewsets.ModelViewSet):
-	queryset = AppUser.objects.all()
-	serializer_class = PersonalInfoSerializer
-	permission_classes = [IsAuthenticated]
-	@action(detail=False, methods=['GET', 'PUT'])
-	def personalInfo(self, request):
-		user = self.request.user
-		if request.method == 'GET':
-			serializer = PersonalInfoSerializer(user)
-			return Response(serializer.data)
-	
-		if request.method == 'PUT':
-			serializer = PersonalInfoSerializer(user, data=request.data, partial=True)
-			serializer.is_valid(raise_exception=True)
-			self.perform_update(serializer)
-			return Response(serializer.data)
-	@action(detail=False, methods=['GET', 'PUT'])
-	def sociallInfo(self, request):
-		user = self.request.user
-		if request.method == 'GET':
-			serializer = SocialInfoSerializer(user)
-			return Response(serializer.data)
-	
-		if request.method == 'PUT':
-			print(request.data)
-			serializer = SocialInfoSerializer(user, data=request.data, partial=True)
-			serializer.is_valid(raise_exception=True)
-			self.perform_update(serializer)
-			return Response(serializer.data)
+    queryset = AppUser.objects.all()
+    serializer_class = PersonalInfoSerializer
+    permission_classes = [IsAuthenticated]
+    @action(detail=False, methods=['GET', 'PUT'])
+    def personalInfo(self, request):
+        user = self.request.user
+        if request.method == 'GET':
+            serializer = PersonalInfoSerializer(user)
+            return Response(serializer.data)
+    
+        if request.method == 'PUT':
+            serializer = PersonalInfoSerializer(user, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+            return Response(serializer.data)
+    @action(detail=False, methods=['GET', 'PUT'])
+    def sociallInfo(self, request):
+        user = self.request.user
+        if request.method == 'GET':
+            serializer = SocialInfoSerializer(user)
+            return Response(serializer.data)
+    
+        if request.method == 'PUT':
+            print(request.data)
+            serializer = SocialInfoSerializer(user, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+            return Response(serializer.data)
 
 
 class ProfileViewAPI(APIView):
