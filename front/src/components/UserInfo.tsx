@@ -40,7 +40,7 @@ const UserInfo = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const inputBgColor = useColorModeValue("gray.100", "gray.700");
-  const dropdownBgColor = useColorModeValue("white", "gray.800");
+  const dropdownBgColor = useColorModeValue("white", "#1A202C");
   const dropdownTextColor = useColorModeValue("black", "white");
   const optionBgColor = useColorModeValue("gray.100", "gray.500");
   const optionHoverBgColor = useColorModeValue("gray.200", "gray.600");
@@ -264,40 +264,33 @@ const UserInfo = () => {
               styles={{
                 control: (provided) => ({
                   ...provided,
-                  backgroundColor: useColorModeValue("white", "gray.700"), // Light mode: white, Dark mode: gray.700
+                  backgroundColor: inputBgColor,
                   borderColor: useColorModeValue("gray.300", "gray.600"),
                   color: dropdownTextColor,
                   boxShadow: "none",
                   "&:hover": {
                     borderColor: useColorModeValue("gray.400", "gray.500"),
-                    // No background change on hover
+                    backgroundColor: useColorModeValue("gray.300", "gray.600"),
                   },
                 }),
                 menu: (provided) => ({
                   ...provided,
-                  backgroundColor: useColorModeValue("white", "gray.800"), // Light mode: white, Dark mode: gray.800
+                  backgroundColor: dropdownBgColor,
+                  // backgroundColor: useColorModeValue("gray.300", "gray.600"),
                 }),
                 singleValue: (provided) => ({
                   ...provided,
                   color: dropdownTextColor,
-                  backgroundColor: "transparent", // Ensure background of selected value is transparent
+                  backgroundColor: useColorModeValue("gray.300", "gray.600"),
                 }),
                 dropdownIndicator: (provided) => ({
                   ...provided,
                   color: dropdownTextColor,
-                  backgroundColor: "transparent", // Ensure background of the dropdown indicator is transparent
+                  backgroundColor: useColorModeValue("gray.300", "gray.600"),
                 }),
                 option: (provided, state) => ({
                   ...provided,
-                  backgroundColor: state.isSelected
-                    ? useColorModeValue("blue.500", "blue.700") // Selected background color
-                    : state.isFocused
-                    ? useColorModeValue("gray.200", "gray.600") // Hover background color
-                    : useColorModeValue("white", "gray.800"), // Default background color
-                  color:
-                    state.isSelected || state.isFocused
-                      ? useColorModeValue("white", "white") // Text color for selected or focused options
-                      : useColorModeValue("black", "white"), // Default text color
+                  backgroundColor: useColorModeValue("gray.300", "gray.600"),
                 }),
               }}
             />
@@ -322,7 +315,9 @@ const UserInfo = () => {
                   mb={2}
                   size="md"
                   variant="subtle"
-                  colorScheme={selectedTags.includes(tag.tag) ? "green" : "gray"}
+                  colorScheme={
+                    selectedTags.includes(tag.tag) ? "green" : "gray"
+                  }
                   cursor="pointer"
                   onClick={() => handleTagClick(tag)}
                 >
@@ -332,7 +327,7 @@ const UserInfo = () => {
             </Flex>
           </FormControl>
           <FormControl>
-            <Flex display={'Flex'} justifyContent={"space-between"}>
+            <Flex display={"Flex"} justifyContent={"space-between"}>
               <FormLabel color="gray.500">About Me</FormLabel>
               <Text
                 mb={2}
