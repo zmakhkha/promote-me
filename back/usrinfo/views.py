@@ -180,9 +180,6 @@ class FollowUserView(APIView):
 class UnfollowUserView(APIView):
 
     def post(self, request, *args, **kwargs):
-        print("--------")
-        print(request.data)
-        print("--------")
         user_to_unfollow_username = request.data.get('username')
         user_to_unfollow = AppUser.objects.get(username=user_to_unfollow_username)
         request.user.unfollow(user_to_unfollow)

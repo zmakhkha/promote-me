@@ -10,13 +10,14 @@ import {
   FormControl,
   FormLabel,
   Flex,
-  HStack,
-  Textarea,
-  useColorModeValue,
   Tag,
   Text,
+  IconButton,
+  useColorModeValue,
+  Textarea,
+  HStack,
 } from "@chakra-ui/react";
-import { FaCamera } from "react-icons/fa";
+import { FaCamera, FaTimes } from "react-icons/fa";
 import AsyncSelect from "react-select/async";
 
 const UserInfo = () => {
@@ -49,6 +50,11 @@ const UserInfo = () => {
         const response = await axios.get("/settings/personalInfo/");
         const data = response.data;
 
+        // Initialize selectedTags from fetched data
+        setSelectedTags(
+          data.interests ? data.interests.split(" ").filter(Boolean) : []
+        );
+
         setUserData({
           firstName: data.firstName || "",
           lastName: data.lastName || "",
@@ -56,10 +62,6 @@ const UserInfo = () => {
           interests: data.interests || "",
           aboutMe: data.aboutMe || "",
         });
-
-        setSelectedTags(
-          data.interests ? data.interests.split(" ").filter(Boolean) : []
-        );
 
         setAboutMeCharsLeft(50 - (data.aboutMe?.length || 0));
 
@@ -107,14 +109,21 @@ const UserInfo = () => {
       if (newTags.length < 5) {
         newTags.push(tag.tag);
       } else {
-        // alert("You can select up to 5 tags only.");
-      setMessage({ text: "Changes saved successfully!", color: "green" });
-
+        setMessage({ text: "You can select up to 5 tags only.", color: "red" });
       }
     } else {
       newTags.splice(tagIndex, 1);
     }
 
+    setSelectedTags(newTags);
+    setUserData((prevData) => ({
+      ...prevData,
+      interests: newTags.join(" "),
+    }));
+  };
+
+  const handleTagRemove = (tag: string) => {
+    const newTags = selectedTags.filter((t) => t !== tag);
     setSelectedTags(newTags);
     setUserData((prevData) => ({
       ...prevData,
@@ -216,7 +225,7 @@ const UserInfo = () => {
           />
         </Flex>
         <Box width="full">
-          <HStack spacing={4} >
+          <HStack spacing={4}>
             <FormControl>
               <FormLabel color="gray.500">First Name</FormLabel>
               <Input
@@ -265,55 +274,29 @@ const UserInfo = () => {
                 menu: (provided) => ({
                   ...provided,
                   backgroundColor: dropdownBgColor,
-                  color: dropdownTextColor,
-                }),
-                menuList: (provided) => ({
-                  ...provided,
-                  backgroundColor: dropdownBgColor,
-                  color: dropdownTextColor,
-                }),
-                option: (provided, state) => ({
-                  ...provided,
-                  backgroundColor: state.isFocused
-                    ? optionHoverBgColor
-                    : optionBgColor,
-                  color: dropdownTextColor,
                 }),
                 singleValue: (provided) => ({
                   ...provided,
                   color: dropdownTextColor,
+                }),
+                dropdownIndicator: (provided) => ({
+                  ...provided,
+                  color: dropdownTextColor,
+                }),
+                option: (provided, state) => ({
+                  ...provided,
+                  backgroundColor: state.isSelected
+                    ? optionBgColor
+                    : state.isFocused
+                    ? optionHoverBgColor
+                    : undefined,
                 }),
               }}
             />
           </FormControl>
           <FormControl>
             <FormLabel color="gray.500">Interests</FormLabel>
-            <Box
-              bg={inputBgColor}
-              p={2}
-              borderRadius="md"
-              display="flex"
-              flexWrap="wrap"
-              mb={2}
-              maxHeight="100px"
-              overflowY="auto"
-              border="1px"
-              borderColor="gray.200"
-              style={{ resize: "none" }}
-            >
-              {selectedTags.map((tag, index) => (
-                <Tag
-                  key={index}
-                  size="md"
-                  variant="solid"
-                  colorScheme="green"
-                  m={1}
-                >
-                  {tag}
-                </Tag>
-              ))}
-            </Box>
-            <Flex flexWrap="wrap" mt={2}>
+            <Flex flexWrap="wrap" gap={2} mb={4} p={2} borderWidth="1px" borderRadius="md" bg={inputBgColor}>
               {tags.map((tag) => (
                 <Tag
                   key={tag.id}
@@ -333,40 +316,25 @@ const UserInfo = () => {
           </FormControl>
           <FormControl>
             <FormLabel color="gray.500">About Me</FormLabel>
+            <Text mb={2} color={aboutMeCharsLeft < 0 ? "red.500" : "gray.500"} textAlign="right">
+              {aboutMeCharsLeft} characters left
+            </Text>
             <Textarea
-              bg={inputBgColor}
-              p={2}
-              borderRadius="md"
-              display="flex"
-              flexWrap="wrap"
-              // mb={2}
-              maxHeight="100px"
-              overflowY="auto"
-              border="1px"
-              borderColor="gray.200"
-              style={{ resize: "none" }}
               value={userData.aboutMe}
               onChange={handleAboutMeChange}
+              bg={inputBgColor}
+              resize="none"
             />
-            <Box textAlign="right" color="gray.500">
-              {aboutMeCharsLeft} characters left
-            </Box>
           </FormControl>
+          {message.text && (
+            <Box color={message.color} mt={4}>
+              {message.text}
+            </Box>
+          )}
+          <Button type="submit" colorScheme="teal" mt={4} width="full" isDisabled={aboutMeCharsLeft < 0}>
+            Save Changes
+          </Button>
         </Box>
-        {message.text && (
-          <Text color={message.color} fontWeight="bold" mb={4}>
-            {message.text}
-          </Text>
-        )}
-        <Button
-          type="submit"
-          bg="black"
-          color="white"
-          _hover={{ bg: "gray.700" }}
-          w="full"
-        >
-          Save Changes
-        </Button>
       </Stack>
     </form>
   );

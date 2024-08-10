@@ -157,12 +157,20 @@ from rest_framework import serializers
 from .models import AppUser, Tag, TagsPerUser
 
 
+from rest_framework import serializers
+from .models import AppUser, Tag, TagsPerUser
+
 class PersonalInfoSerializer(serializers.ModelSerializer):
+    interests = serializers.SerializerMethodField()
+
     class Meta:
         model = AppUser
         fields = ['firstName', 'lastName', 'image', 'country', 'interests', 'aboutMe']
 
-    interests = serializers.CharField(write_only=True)
+    def get_interests(self, obj):
+        # Fetch the tags associated with the user and return them as a space-separated string
+        tags = TagsPerUser.objects.filter(user=obj).values_list('tag__tag', flat=True)
+        return ' '.join(tags)
 
     def update(self, instance, validated_data):
         instance.firstName = validated_data.get('firstName', instance.firstName)
@@ -175,13 +183,15 @@ class PersonalInfoSerializer(serializers.ModelSerializer):
 
         if 'interests' in validated_data:
             interests = validated_data['interests'].split()
-            instance.tags.clear()
+            # Clear existing tags and update with new ones
+            TagsPerUser.objects.filter(user=instance).delete()
             for tag_name in interests:
                 tag, created = Tag.objects.get_or_create(tag=tag_name)
                 TagsPerUser.objects.create(user=instance, tag=tag)
 
         instance.save()
         return instance
+
 
 
 from rest_framework import serializers
