@@ -61,7 +61,7 @@ const [selectedCountry, setSelectedCountry] = useState<Country | undefined>(unde
         const data = response.data;
 
         // Initialize selectedTags from fetched data
-        console.log(data.interests );
+        // console.log(data.interests );
         
         setSelectedTags(
           data.interests ? data.interests.split(" ").filter(Boolean) : []

@@ -41,7 +41,6 @@ const urlHandlerMap: { [key: string]: (username: string) => string } = {
 const PlateformIconList = ({ platforms }: Props) => {
   const handleClick = (platform: Platform) => {
     const username = platform.username;
-    // console.log(username);
     
     const handler = urlHandlerMap[platform.slug];
     if (handler && username) {

@@ -18,7 +18,7 @@ const SocialMedia = ({ inputBgColor }: SocialMediaProp) => {
     const fetchUserData = async () => {
       try {
         const response = await axios.get("/settings/sociallInfo/");
-        console.log("Fetched user data:", response.data); // Log the fetched data
+        // console.log("Fetched user data:", response.data); // Log the fetched data
         setUserData({
           snapchat: response.data.snapchat || "",
           tiktok: response.data.tiktok || "",

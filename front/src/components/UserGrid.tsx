@@ -13,7 +13,7 @@ interface Props {
 const UserGrid = ({ UserQuery }: Props) => {
     const [page, setPage] = useState(1);
     const { data, error, isLoading } = useUsers(UserQuery, page);
-    console.log(data);
+    // console.log(data);
     
     const Skeletons = [1, 2, 3, 4, 5, 6, 7, 8];
 
