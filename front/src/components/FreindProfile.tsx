@@ -42,6 +42,7 @@ const FriendProfile = () => {
     aboutMe: "",
     follower_count: 0,
     view_count: 0,
+    age: 0,
     tags: [],
   });
   const [followingList, setFollowingList] = useState<string[]>([]);

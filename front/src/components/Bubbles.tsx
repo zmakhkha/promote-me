@@ -1,20 +1,31 @@
 import React, { useState, useEffect } from "react";
 import "../styles/Bubbles.css";
 
+// Define the type for a bubble
+interface Bubble {
+  id: number;
+  x: number;
+  y: number;
+}
+
 const Bubbles = () => {
-  const [bubbles, setBubbles] = useState([]);
+  // Set the state with an explicit type
+  const [bubbles, setBubbles] = useState<Bubble[]>([]);
 
   useEffect(() => {
-    const handleMouseMove = (e: any) => {
-      const newBubble = {
+    const handleMouseMove = (e: MouseEvent) => {
+      const newBubble: Bubble = {
         id: Date.now(),
         x: e.clientX,
         y: e.clientY,
       };
+
       setBubbles((prevBubbles) => [...prevBubbles, newBubble]);
 
       setTimeout(() => {
-        setBubbles((prevBubbles) => prevBubbles.filter((bubble) => bubble.id !== newBubble.id));
+        setBubbles((prevBubbles) =>
+          prevBubbles.filter((bubble) => bubble.id !== newBubble.id)
+        );
       }, 2000);
     };
 
@@ -30,7 +41,7 @@ const Bubbles = () => {
         <div
           key={bubble.id}
           className="bubble"
-          style={{ left: bubble.x + "px", top: bubble.y + "px" }}
+          style={{ left: `${bubble.x}px`, top: `${bubble.y}px` }}
         />
       ))}
     </div>

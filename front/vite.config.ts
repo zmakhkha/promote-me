@@ -9,4 +9,7 @@ export default defineConfig({
     port: 2100,        // You can change the port if needed
     // You can add more server options here if needed
   },
+  build: {
+    chunkSizeWarningLimit: 1000, // Increase limit to 1000 KB (or another value)
+  },
 })

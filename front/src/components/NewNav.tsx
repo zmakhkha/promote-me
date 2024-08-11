@@ -110,7 +110,7 @@ const NewNav = () => {
               cursor="pointer"
               minW={0}
             >
-              <Avatar  size="sm" src={userImage || {userImage}} />
+              <Avatar  size="sm" src={userImage || String({userImage})} />
             </MenuButton>
             <MenuList>
               <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>

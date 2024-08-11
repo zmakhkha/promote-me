@@ -7,11 +7,15 @@ const sentences = [
   "Expand your social network",
 ];
 
+interface TypingEffectProps {
+  text: string;
+}
+
 const typingSpeed = 100; // Speed of typing effect in milliseconds
 const eraseSpeed = 200; // Speed of erasing effect in milliseconds
 const pauseDuration = 5000; // Pause between sentences in milliseconds
 
-const TypingEffect = ({ text }) => {
+const TypingEffect = ({ text }: TypingEffectProps) => {
   const [displayText, setDisplayText] = useState("");
   const [isTyping, setIsTyping] = useState(true);
   const [sentenceIndex, setSentenceIndex] = useState(0);

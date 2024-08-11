@@ -57,6 +57,7 @@ const Profile = () => {
     aboutMe: "",
     follower_count: 0,
     view_count: 0,
+    age: 0,
     tags: [],
   });
 
@@ -82,7 +83,7 @@ const Profile = () => {
         const response = await axios.get("/users/profileInfo");
         setUserData(response.data);
         setImagePreview(getImage(response.data.image) || avatar);
-        setTagsArray(response.data.tags.map((tag) => tag.tag));
+        setTagsArray(response.data.tags.map((tag: { tag: any; }) => tag.tag));
         fetchCountryLabel(); // Fetch country label after setting user data
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);

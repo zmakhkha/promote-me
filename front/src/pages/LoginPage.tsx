@@ -18,18 +18,18 @@ import axios from "../services/api-client";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null); // Allow string or null
 
   const inputBgColor = useColorModeValue("gray.100", "gray.700");
-  const cardTextColor = useColorModeValue("gray.", "gray.100");
-  const hrefColor = useColorModeValue("gray.100", "gray.100");
+  const cardTextColor = useColorModeValue("gray.800", "gray.100"); // Fixed the value
+  const hrefColor = useColorModeValue("blue.500", "blue.300"); // Fixed the value
   const gradientBgColor = useColorModeValue(
     "linear(to-b, white, gray.200 15%, teal.200 75%)",
     "linear(to-b, gray.800, gray.600 15%, gray.200 75%)"
   );
   const cardShadowColor = useColorModeValue("md", "lg");
 
-  const handleLogin = async (event) => {
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     try {

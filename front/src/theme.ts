@@ -22,7 +22,7 @@ const theme = extendTheme({
     },
   },
   styles: {
-    global: (props) => ({
+    global: (props: any) => ({
       body: {
         bg: props.colorMode === 'light' ? 'gray.600' : 'gray.800',
       },

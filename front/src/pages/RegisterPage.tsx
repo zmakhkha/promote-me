@@ -38,7 +38,7 @@ const SignUpPage = () => {
   );
   const cardShadowColor = useColorModeValue("md", "lg");
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
     // Clear the error when the user starts typing
@@ -48,13 +48,13 @@ const SignUpPage = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
 
     try {
       await axios.post("/auth/signUp/", formData);
       window.location.href = "/login"; // Redirect to login page after successful registration
-    } catch (err) {
+    } catch (err: any) {
       if (err.response && err.response.data) {
         const errorData = err.response.data;
         // Iterate over the error fields and display the first one

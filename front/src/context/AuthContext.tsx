@@ -1,6 +1,5 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import axios from '../services/api-client';
-import Cookies from 'js-cookie';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -33,8 +32,6 @@ const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
 
       // Extract and store tokens from response
       const { accessToken, refreshToken } = response.data;
-      Cookies.set('access_token', accessToken, { expires: 1 }); // 1 day expiration
-      Cookies.set('refresh_token', refreshToken, { expires: 1 }); // 1 day expiration
       localStorage.setItem('access_token', accessToken);
       localStorage.setItem('refresh_token', refreshToken);
 
@@ -48,9 +45,6 @@ const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     axios.post('/api/logout/', {}, { withCredentials: true })
       .then(() => {
         setIsAuthenticated(false);
-        // Clear cookies and local storage
-        Cookies.remove('access_token');
-        Cookies.remove('refresh_token');
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
       })

@@ -6,7 +6,6 @@ import { Genre } from "../hooks/useGenres";
 import PlatformSelector from "../components/PlatformSelector";
 import { Platform } from "../hooks/UseUsers";
 import SortSelector from "../components/SortSelector";
-import NavBar from "../components/NavBar";
 import UserHeading from "../components/UserHeading";
 import NewNav from "../components/NewNav";
 

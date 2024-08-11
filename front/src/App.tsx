@@ -13,12 +13,12 @@ import SettingsPage from "./pages/SettingsPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ProfilePage from "./pages/ProfilePage";
 import { Genre } from "./hooks/useGenres";
-// import { Platform } from "./hooks/UseUsers";
+import { Platform } from "./hooks/UseUsers";
 import FriendProfilePage from "./pages/FriendProfilePage";
 
 export interface UserQuery {
   genre: Genre | null;
-  // platform: Platform | null;
+  platform: Platform | null;
   sortOrder: string;
 }
 

@@ -20,6 +20,15 @@ import {
 } from "@chakra-ui/react";
 import { FaCamera, FaTimes } from "react-icons/fa";
 import AsyncSelect from "react-select/async";
+interface Country {
+  value: string;
+  label: string;
+  // Add other fields if necessary
+}
+interface Tag {
+  id: string;
+  tag: string;
+}
 
 const UserInfo = () => {
   const [userData, setUserData] = useState({
@@ -34,7 +43,7 @@ const UserInfo = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | undefined>("");
   const [countries, setCountries] = useState([]);
-  const [selectedCountry, setSelectedCountry] = useState(null);
+const [selectedCountry, setSelectedCountry] = useState<Country | undefined>(undefined);
   const [aboutMeCharsLeft, setAboutMeCharsLeft] = useState(50);
   const [message, setMessage] = useState({ text: "", color: "" });
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -78,7 +87,7 @@ const UserInfo = () => {
         const countriesData = await countriesResponse.json();
         setCountries(countriesData.countries);
         const userCountry =
-          countriesData.countries.find((c) => c.value === data.country) || null;
+          countriesData.countries.find((c: Country) => c.value === data.country) || null;
         setSelectedCountry(userCountry);
 
         const tagsResponse = await axios.get("http://localhost:2000/tags");
@@ -309,7 +318,7 @@ const UserInfo = () => {
               borderRadius="md"
               bg={inputBgColor}
             >
-              {tags.map((tag) => (
+              {tags.map((tag: Tag) => (
                 <Tag
                   key={tag.id}
                   mt={1}
