@@ -214,3 +214,14 @@ class UserFollowingList(APIView):
         following = Follower.objects.filter(follower=user)
         serializer = FollowingSerializer(following, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+
+class TagsPerUserList(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        tags = TagsPerUser.objects.filter(user=user).values_list('tag__tag', flat=True)
+        tags_str = ' '.join(tags)
+        return Response({"tags": tags_str})

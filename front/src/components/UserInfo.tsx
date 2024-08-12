@@ -92,6 +92,14 @@ const [selectedCountry, setSelectedCountry] = useState<Country | undefined>(unde
 
         const tagsResponse = await axios.get("/tags");
         setTags(tagsResponse.data);
+        const userTagsResponse = await axios.get("/user-tags");
+        const userTags = userTagsResponse.data.tags.split(" ");
+
+        // Set initially selected tags based on intersection
+        const initialSelectedTags = userTags.filter((tag: string) =>
+          tagsResponse.data.some((availableTag: Tag) => availableTag.tag === tag)
+        );
+        setSelectedTags(initialSelectedTags);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -309,36 +317,27 @@ const [selectedCountry, setSelectedCountry] = useState<Country | undefined>(unde
 
           <FormControl>
             <FormLabel color="gray.500">Interests</FormLabel>
-            <Flex
-              flexWrap="wrap"
-              gap={2}
-              mb={4}
-              p={2}
-              borderWidth="1px"
-              borderRadius="md"
-              bg={inputBgColor}
-            >
+            <Box bg={inputBgColor} w='100%' p={4} color='white' borderRadius={4}>
+
+            <Flex  flexWrap="wrap">
               {tags.map((tag: Tag) => (
                 <Tag
-                  key={tag.id}
-                  mt={1}
-                  mr={2}
-                  mb={2}
-                  size="md"
-                  variant="subtle"
-                  colorScheme={
-                    selectedTags.includes(tag.tag) ? "green" : "gray"
-                  }
-                  cursor="pointer"
-                  onClick={() => handleTagClick(tag)}
+                key={tag.id}
+                size="lg"
+                m={1}
+                variant={selectedTags.includes(tag.tag) ? "solid" : "outline"}
+                bgColor={selectedTags.includes(tag.tag) ? "green.400" : ""}
+                onClick={() => handleTagClick(tag)}
+                cursor="pointer"
                 >
                   {tag.tag}
                 </Tag>
               ))}
             </Flex>
+              </Box>
           </FormControl>
           <FormControl>
-            <Flex display={"Flex"} justifyContent={"space-between"}>
+            <Flex  display={"Flex"} justifyContent={"space-between"}>
               <FormLabel color="gray.500">About Me</FormLabel>
               <Text
                 mb={2}
@@ -353,13 +352,16 @@ const [selectedCountry, setSelectedCountry] = useState<Country | undefined>(unde
               onChange={handleAboutMeChange}
               bg={inputBgColor}
               resize="none"
-            />
+              />
           </FormControl>
+          <Flex display={"Flex"} justifyContent={"center"}>
+          
           {message.text && (
             <Box color={message.color} mt={4}>
               {message.text}
             </Box>
           )}
+          </Flex>
           <Button
             type="submit"
             colorScheme="teal"

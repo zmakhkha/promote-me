@@ -1,6 +1,14 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import axios from "../services/api-client";
-import { Input, Button, Stack, FormControl, FormLabel } from "@chakra-ui/react";
+import {
+  Input,
+  Button,
+  Stack,
+  FormControl,
+  FormLabel,
+  Box,
+  Flex,
+} from "@chakra-ui/react";
 
 interface SocialMediaProp {
   inputBgColor: string;
@@ -13,12 +21,16 @@ const SocialMedia = ({ inputBgColor }: SocialMediaProp) => {
     instagram: "",
   });
 
+  const [message, setMessage] = useState<{ text: string; color: string }>({
+    text: "",
+    color: "green",
+  });
+
   useEffect(() => {
     // Fetch user data on component mount
     const fetchUserData = async () => {
       try {
         const response = await axios.get("/settings/sociallInfo/");
-        // console.log("Fetched user data:", response.data); // Log the fetched data
         setUserData({
           snapchat: response.data.snapchat || "",
           tiktok: response.data.tiktok || "",
@@ -42,8 +54,9 @@ const SocialMedia = ({ inputBgColor }: SocialMediaProp) => {
 
     try {
       await axios.put("/settings/sociallInfo/", userData);
-      alert("Changes saved successfully!");
+      setMessage({ text: "Changes saved successfully!", color: "green" });
     } catch (error) {
+      setMessage({ text: "Error saving social media data.", color: "red" });
       console.error("Error saving social media data:", error);
     }
   };
@@ -78,13 +91,21 @@ const SocialMedia = ({ inputBgColor }: SocialMediaProp) => {
             bg={inputBgColor}
           />
         </FormControl>
+
+        <Flex justifyContent="center">
+          {message.text && (
+            <Box color={message.color} mt={4}>
+              {message.text}
+            </Box>
+          )}
+        </Flex>
+
         <Button
-          type="submit"
-          bg="black"
-          color="white"
-          _hover={{ bg: "gray.700" }}
-          mt={4}
-          w="full"
+            type="submit"
+            colorScheme="teal"
+            mt={4}
+            width="full"
+            // isDisabled={aboutMeCharsLeft < 0}
         >
           Save Changes
         </Button>

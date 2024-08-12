@@ -4,8 +4,10 @@ from rest_framework import serializers
 from .models import AppUser, UserPlatform
 from .validators import *
 from .models import Tag, Platform, Follower, ProfileView, Platform, TagsPerUser, AppUser as User
-# import datetime
 from datetime import datetime
+from django.db import transaction
+
+
 unique_email_validator = UniqueValidator(queryset=User.objects.all(), message="This email is already in use.")
 unique_username_validator = UniqueValidator(queryset=User.objects.all(), message="This username is already in use.")
 
@@ -147,24 +149,12 @@ class CustomPlatformSerializer(serializers.ModelSerializer):
     class Meta:
         model = Platform
         fields = ['id', 'name', 'slug', 'username']
-        
-from rest_framework import serializers
-from .models import AppUser, Tag, TagsPerUser
-
-
-
-from rest_framework import serializers
-from .models import AppUser, Tag, TagsPerUser
-
-
-from rest_framework import serializers
-from .models import AppUser, Tag, TagsPerUser
-from django.db import transaction
-
-from django.db import transaction
-from django.db import transaction
+       
 
 class PersonalInfoSerializer(serializers.ModelSerializer):
+    firstName = serializers.CharField(required=True, validators=[char_validator])
+    lastName = serializers.CharField(required=True, validators=[char_validator])
+
     interests = serializers.CharField(write_only=True, required=False)
     interests_display = serializers.SerializerMethodField()
 
@@ -199,14 +189,6 @@ class PersonalInfoSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-
-
-
-
-
-
-from rest_framework import serializers
-from .models import AppUser, UserPlatform, Platform
 class SocialInfoSerializer(serializers.Serializer):
     snapchat = serializers.CharField(max_length=255, required=False, allow_blank=True)
     tiktok = serializers.CharField(max_length=255, required=False, allow_blank=True)
@@ -312,8 +294,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         print("Calling get_tiktok")
         return self.get_platform_username(obj, 'tiktok')
 
-from rest_framework import serializers
-from .models import Follower
 
 class FollowingSerializer(serializers.ModelSerializer):
     follower_username = serializers.CharField(source='followed.username')
