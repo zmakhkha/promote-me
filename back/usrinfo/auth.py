@@ -47,7 +47,7 @@ class AuthViewSet(viewsets.ViewSet):
         else:
             cache.set(cache_key, attempts + 1, timeout=300)  
             logger.critical(f"[AuthViewSet::signIn] Invalid login attempt for email {email}")
-            return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
         
     @action(detail=False, methods=['post'])
     def signUp(self, request):

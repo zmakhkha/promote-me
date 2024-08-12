@@ -62,7 +62,7 @@ class AppUserViewSet(viewsets.ModelViewSet):
             queryset = queryset.order_by('-score')
         else:
             # Default sorting or "Relevance" (if you need a default ordering)
-            queryset = queryset.order_by('id')  # Change this to your preferred default ordering
+            queryset = queryset.order_by('id')  # Change   this to your preferred default ordering
 
         return queryset
 
