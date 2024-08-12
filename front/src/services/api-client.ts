@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: "http://0.0.0.0:2000",
+  baseURL: "https://0.0.0.0:2000",
 });
 
 // Add an interceptor to include the Authorization header for authenticated requests

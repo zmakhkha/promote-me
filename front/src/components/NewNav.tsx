@@ -43,7 +43,7 @@ const NewNav = () => {
   useEffect(() => {
     const fetchUserImage = async () => {
       try {
-        const response = await axios.get("http://localhost:2000/users/navInfo");
+        const response = await axios.get("/users/navInfo");
         setUserImage(getImage(response.data.image));
       } catch (error) {
         console.error("Failed to fetch user image:", error);

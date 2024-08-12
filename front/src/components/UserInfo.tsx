@@ -90,7 +90,7 @@ const [selectedCountry, setSelectedCountry] = useState<Country | undefined>(unde
           countriesData.countries.find((c: Country) => c.value === data.country) || null;
         setSelectedCountry(userCountry);
 
-        const tagsResponse = await axios.get("http://localhost:2000/tags");
+        const tagsResponse = await axios.get("/tags");
         setTags(tagsResponse.data);
       } catch (error) {
         console.error("Error fetching user data:", error);
