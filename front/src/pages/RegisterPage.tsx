@@ -29,8 +29,8 @@ const SignUpPage = () => {
   });
   const [currentError, setCurrentError] = useState("");
   const [errorField, setErrorField] = useState("");
-  const hrefColor = useColorModeValue("black", "white"); // Fixed the value
-
+  const [dateError, setDateError] = useState("");
+  const hrefColor = useColorModeValue("black", "white");
   const inputBgColor = useColorModeValue("gray.100", "gray.700");
   const cardTextColor = useColorModeValue("gray.800", "gray.100");
   const gradientBgColor = useColorModeValue(
@@ -41,12 +41,12 @@ const SignUpPage = () => {
 
   useEffect(() => {
     // Extract referral parameter from query string
-    const queryParams = new URLSearchParams(location.search);
+    const queryParams = new URLSearchParams(window.location.search); // Use window.location.search
     const reffer = queryParams.get("reffer");
     if (reffer) {
       setFormData((prevData) => ({ ...prevData, reffer }));
     }
-  }, [location.search]);
+  }, []);
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -56,10 +56,36 @@ const SignUpPage = () => {
       setCurrentError("");
       setErrorField("");
     }
+    if (name === "dateOfBirth") {
+      validateDateOfBirth(value);
+    }
+  };
+
+  const validateDateOfBirth = (date: string) => {
+    const today = new Date();
+    const dob = new Date(date);
+    let age = today.getFullYear() - dob.getFullYear();
+    const monthDiff = today.getMonth() - dob.getMonth();
+    const dayDiff = today.getDate() - dob.getDate();
+
+    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+      age--;
+    }
+
+    if (age < 13) {
+      setDateError("You must be at least 13 years old.");
+    } else {
+      setDateError("");
+    }
   };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+
+    if (dateError) {
+      // Prevent form submission if date validation fails
+      return;
+    }
 
     try {
       await axios.post("/auth/signUp/", formData);
@@ -204,16 +230,27 @@ const SignUpPage = () => {
                   onChange={handleChange}
                   bg={inputBgColor}
                   variant="filled"
-                  isInvalid={errorField === "dateOfBirth"}
+                  isInvalid={errorField === "dateOfBirth" || Boolean(dateError)}
                   errorBorderColor="red.300"
                   required
                 />
-                {currentError && (
+                {dateError && (
                   <p
                     style={{
                       color: "red",
                       textAlign: "center",
                       marginTop: "1rem",
+                    }}
+                  >
+                    {dateError}
+                  </p>
+                )}
+                {currentError && !dateError && (
+                  <p
+                    style={{
+                      color: "red",
+                      textAlign: "center",
+                      
                     }}
                   >
                     {currentError}
@@ -233,7 +270,7 @@ const SignUpPage = () => {
             </form>
             <p
               className="account"
-              style={{ marginTop: "1rem", textAlign: "center" }}
+              style={{  textAlign: "center" }}
             >
               Already have an account? <a style={{ color: hrefColor }} href="/login">Log In</a>
             </p>
