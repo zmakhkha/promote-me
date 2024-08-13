@@ -53,11 +53,25 @@ class AuthViewSet(viewsets.ViewSet):
     def signUp(self, request):
         serializer = SignUpSerializer(data=request.data)
         if serializer.is_valid():
+            referrer_username = request.data.get('reffer')
             user = serializer.save()
+
+
 
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
             refresh_token = str(refresh)
+            if referrer_username:
+                try:
+                    referrer_user = AppUser.objects.get(username=referrer_username)
+                    user.apply_referral(referrer_user)
+                except:
+                    return Response({
+                        'status': 'Account created successfully | Referrer username does not exist.',
+                        'access': access_token,
+                        'refresh': refresh_token
+                                     },
+                     status=status.HTTP_201_CREATED)
 
             return Response({
                 'status': 'Account created successfully',

@@ -137,6 +137,18 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
         """
         return AppUser.objects.filter(follower_user__follower=self)
 
+    def apply_referral(self, referrer_user):
+        """
+        Apply a referral for the current user.
+        """
+        if referrer_user and referrer_user != self:
+            # Update scores
+            self.update_score(100)
+            referrer_user.update_score(100)
+
+            # Create promotion record
+            Refferal.objects.create(referrer=referrer_user, referred=self)
+
 class Tag(models.Model):
     tag = models.CharField(max_length=30, unique=True, blank=True)
     def __str__(self):
@@ -147,6 +159,13 @@ class TagsPerUser(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     def __str__(self):
         return f"{self.user}::{self.tag}"
+
+class Refferal(models.Model):
+    referrer = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='referrer_user', on_delete=models.CASCADE)
+    referred = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='referred_user', on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return f'{self.referrer.username} referred {self.referred.username}\'s profile'
 
 class ProfileView(models.Model):
     viewer = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='viewer_user', on_delete=models.CASCADE)

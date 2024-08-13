@@ -22,9 +22,15 @@ const NaNavBar = () => {
   useEffect(() => {
     const options = {
       strings: [
+        "Promote yourself online",
         "Find your soulmate online",
         "Connect with people worldwide",
-        "Find your social media soulmate",
+        "Snapchat Girls usernames",
+        "TikTok Girls usernames",
+        "Instagram Girls usernames",
+        "Snapchat Boys usernames",
+        "TikTok Boys usernames",
+        "Instagram Boys usernames",
       ],
       typeSpeed: 50,
       backSpeed: 30,

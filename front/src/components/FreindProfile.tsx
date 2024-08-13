@@ -15,7 +15,7 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 import { FaSnapchat, FaTiktok, FaInstagram } from "react-icons/fa";
-import { CiCirclePlus, CiCircleMinus } from 'react-icons/ci';
+import { CiCirclePlus, CiCircleMinus } from "react-icons/ci";
 import avatar from "../assets/no-image-placeholder.webp";
 import axios from "../services/api-client";
 import getImage from "../services/getImage";
@@ -74,18 +74,22 @@ const FriendProfile = () => {
       }
 
       try {
-        const response = await axios.get(`/users/profileInfo?username=${username}`);
+        const response = await axios.get(
+          `/users/profileInfo?username=${username}`
+        );
         setUserData(response.data);
         setImagePreview(getImage(response.data.image) || avatar);
         setTagsArray(response.data.tags.map((tag: any) => tag.tag));
         fetchCountryLabel();
         // Fetch following list to check if user is followed
-        const followingResponse = await axios.get('/following/');
-        const followedUsers = followingResponse.data.map((item: any) => item.follower_username);
+        const followingResponse = await axios.get("/api/following/");
+        const followedUsers = followingResponse.data.map(
+          (item: any) => item.follower_username
+        );
         setFollowingList(followedUsers);
         setIsFollowing(followedUsers.includes(username));
 
-        await axios.post('/profile-view/', { username });
+        await axios.post("/api/profile-view/", { username });
       } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
       }
@@ -105,14 +109,16 @@ const FriendProfile = () => {
       }
 
       if (isFollowing) {
-        await axios.post(`/unfollow/`, { username });
+        await axios.post(`/api/unfollow/`, { username });
       } else {
-        await axios.post(`/follow/`, { username });
+        await axios.post(`/api/follow/`, { username });
       }
 
       setIsFollowing(!isFollowing);
 
-      const response = await axios.get(`/users/profileInfo?username=${username}`);
+      const response = await axios.get(
+        `/users/profileInfo?username=${username}`
+      );
       setUserData(response.data);
     } catch (error) {
       console.error("Error toggling follow status:", error);
@@ -301,7 +307,7 @@ const FriendProfile = () => {
           About Me
         </Text>
         <Textarea
-          placeholder="Write something about yourself"
+          placeholder="Nothing ...."
           value={userData.aboutMe}
           isReadOnly
           bg={inputBgColor}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Card,
@@ -29,6 +29,7 @@ const SignUpPage = () => {
   });
   const [currentError, setCurrentError] = useState("");
   const [errorField, setErrorField] = useState("");
+  const hrefColor = useColorModeValue("black", "white"); // Fixed the value
 
   const inputBgColor = useColorModeValue("gray.100", "gray.700");
   const cardTextColor = useColorModeValue("gray.800", "gray.100");
@@ -37,6 +38,15 @@ const SignUpPage = () => {
     "linear(to-b, gray.800, gray.600 15%, gray.200 75%)"
   );
   const cardShadowColor = useColorModeValue("md", "lg");
+
+  useEffect(() => {
+    // Extract referral parameter from query string
+    const queryParams = new URLSearchParams(location.search);
+    const reffer = queryParams.get("reffer");
+    if (reffer) {
+      setFormData((prevData) => ({ ...prevData, reffer }));
+    }
+  }, [location.search]);
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -225,7 +235,7 @@ const SignUpPage = () => {
               className="account"
               style={{ marginTop: "1rem", textAlign: "center" }}
             >
-              Already have an account? <a  href="/login">Log In</a>
+              Already have an account? <a style={{ color: hrefColor }} href="/login">Log In</a>
             </p>
           </CardBody>
         </Card>

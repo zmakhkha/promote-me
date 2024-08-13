@@ -21,8 +21,8 @@ const LoginPage = () => {
   const [error, setError] = useState<string | null>(null); // Allow string or null
 
   const inputBgColor = useColorModeValue("gray.100", "gray.700");
-  const cardTextColor = useColorModeValue("gray.800", "gray.100"); // Fixed the value
-  const hrefColor = useColorModeValue("blue.500", "blue.300"); // Fixed the value
+  const cardTextColor = useColorModeValue("gray.800", "gray.100");
+  const hrefColor = useColorModeValue("black", "white");
   const gradientBgColor = useColorModeValue(
     "linear(to-b, white, gray.200 15%, teal.200 75%)",
     "linear(to-b, gray.800, gray.600 15%, gray.200 75%)"
@@ -50,9 +50,15 @@ const LoginPage = () => {
       localStorage.setItem("refreshToken", refreshToken);
 
       window.location.href = "/"; // Replace with actual redirect
-    } catch (err) {
+    } catch (err: any) {
       console.error("Login error:", err);
-      setError("Login failed. Please check your credentials and try again.");
+
+      // Check for specific backend error message
+      if (err.response?.data?.error === "Too many login attempts. Please try again later.") {
+        setError("Too many login attempts. Please try again later.");
+      } else {
+        setError("Login failed. Please check your credentials and try again.");
+      }
     }
   };
 

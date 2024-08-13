@@ -11,7 +11,7 @@ const Chat = () => {
       width="50%"
       maxWidth="600px" // Optional: Prevents excessive stretching
     >
-      <Heading mb={4}>Coming soon</Heading>
+      <Heading justifyContent={'center'} mb={4}>Coming soon</Heading>
     </Box>
   );
 };
