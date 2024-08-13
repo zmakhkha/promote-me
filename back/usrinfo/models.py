@@ -57,6 +57,7 @@ class AppUser(AbstractBaseUser, PermissionsMixin):
     dateOfBirth = models.DateField(blank=True, null=True)
     aboutMe = models.TextField(blank=True, null=True)
     score = models.IntegerField(default=0)
+    date_joined = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(
         upload_to='images',
         validators=[max_size_validator],

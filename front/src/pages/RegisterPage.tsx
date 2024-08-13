@@ -219,8 +219,8 @@ const SignUpPage = () => {
                   errorBorderColor="red.300"
                   required
                 >
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
+                  <option value="F">Female</option>
+                  <option value="M">Male</option>
                 </Select>
                 <Input
                   name="dateOfBirth"
