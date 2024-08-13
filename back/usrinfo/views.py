@@ -49,7 +49,13 @@ class AppUserViewSet(viewsets.ModelViewSet):
         ).exclude(
             id=self.request.user.id
         )
-        
+
+        # Get the platform filter from the request
+        platform_filter = self.request.query_params.get('platform', None)
+
+        if platform_filter:
+            queryset = queryset.filter(user_platforms__platform__slug=platform_filter)
+
         # Get the sort order from the request
         sort_order = self.request.query_params.get('ordering', '')
 
@@ -62,7 +68,7 @@ class AppUserViewSet(viewsets.ModelViewSet):
             queryset = queryset.order_by('-score')
         else:
             # Default sorting or "Relevance" (if you need a default ordering)
-            queryset = queryset.order_by('id')  # Change   this to your preferred default ordering
+            queryset = queryset.order_by('id')  # Change this to your preferred default ordering
 
         return queryset
 

@@ -92,7 +92,7 @@ const [selectedCountry, setSelectedCountry] = useState<Country | undefined>(unde
 
         const tagsResponse = await axios.get("/tags");
         setTags(tagsResponse.data);
-        const userTagsResponse = await axios.get("/user-tags");
+        const userTagsResponse = await axios.get("/api/user-tags");
         const userTags = userTagsResponse.data.tags.split(" ");
 
         // Set initially selected tags based on intersection

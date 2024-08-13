@@ -1,12 +1,20 @@
 import { User } from "../hooks/UseUsers";
 import { useEffect, useState } from "react";
-import { Card, CardBody, Heading, HStack, Image, Box, useColorModeValue } from "@chakra-ui/react";
+import {
+  Card,
+  CardBody,
+  Heading,
+  HStack,
+  Image,
+  Box,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import PlateformIconList from "./PlateformIconList";
 import Emoji from "./Emoji";
 import countriesService from "../services/countriesService";
 import getCroppedImageUrl from "../services/getCoppedImages";
 import { useNavigate } from "react-router-dom";
-
+import { MdLocationOff } from "react-icons/md";
 
 interface Props {
   user: User;
@@ -38,7 +46,9 @@ const UserCard = ({ user }: Props) => {
   const cardBg = useColorModeValue("gray.100", "gray.900");
 
   return (
-    <Card height="400px" bg={cardBg}> {/* Set a fixed height for the card and a dynamic background color */}
+    <Card height="400px" bg={cardBg}>
+      {" "}
+      {/* Set a fixed height for the card and a dynamic background color */}
       <Box height="85%" overflow="hidden">
         {/* Image container with fixed height */}
         <Image
@@ -47,7 +57,8 @@ const UserCard = ({ user }: Props) => {
           src={getCroppedImageUrl(user.background_image)}
           objectFit="cover" // Ensure the image covers the container
           width="100%"
-          height="100%" // Make the image fill the container
+          cursor={'pointer'}
+          height="100%"
         />
       </Box>
       <CardBody>
@@ -63,8 +74,14 @@ const UserCard = ({ user }: Props) => {
         </HStack>
         <HStack>
           <Heading as="h5" size="sm">
-            {countryLabel !== null ? countryLabel : "Loading..."}{" "}
-            {/* Render a loading state */}
+            {countryLabel ? (
+              countryLabel
+            ) : (
+              <HStack spacing={1}>
+                <MdLocationOff />
+                <span>Location disabled</span>
+              </HStack>
+            )}
           </Heading>
         </HStack>
       </CardBody>

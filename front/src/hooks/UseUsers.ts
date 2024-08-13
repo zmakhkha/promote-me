@@ -1,5 +1,5 @@
 import { UserQuery } from "../App";
-import useData from "./useData"; // Assuming this hook handles data fetching
+import useData from "./useData";
 
 export interface Platform {
   id: number;
@@ -25,13 +25,13 @@ const useUsers = (userQuery: UserQuery, page: number) =>
     "/users",
     {
       params: {
-        page: page,  // Pass the page parameter here
-        // genres: userQuery.genre?.id,  // Filtering by genre ID
-        // platforms: userQuery.platform?.id,  // Filtering by platform ID
-        ordering: userQuery.sortOrder,  // Sort order
+        page: page,
+        genres: userQuery.genre?.id, // Filtering by genre ID
+        platform: userQuery.platform?.slug, // Filtering by platform slug
+        ordering: userQuery.sortOrder, // Sort order
       },
     },
-    [userQuery, page]  // Include page and userQuery in the dependency array
+    [userQuery, page]
   );
 
 export default useUsers;

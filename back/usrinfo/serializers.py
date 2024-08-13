@@ -38,7 +38,7 @@ class SignUpSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AppUser
-        fields = ['firstName', 'lastName', 'username', 'email', 'password', 'password2', 'dateOfBirth']
+        fields = ['firstName', 'lastName', 'username', 'email', 'password', 'password2', 'gender', 'dateOfBirth']
     
     def validate(self, data):
         if data['password'] != data['password2']:
@@ -52,6 +52,7 @@ class SignUpSerializer(serializers.ModelSerializer):
             email=validated_data['email'],
             firstName=validated_data['firstName'],
             lastName=validated_data['lastName'],
+            gender=validated_data['gender'],
             dateOfBirth=validated_data['dateOfBirth']
         )
         user.set_password(validated_data['password'])
