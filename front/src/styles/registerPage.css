@@ -1,0 +1,16 @@
+.form-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    transition: transform 0.5s ease-in-out;
+  }
+  
+  .slide {
+    transform: translateX(-100%);
+  }
+  
+  .error {
+    color: red;
+    font-size: 0.875rem;
+  }
+  
